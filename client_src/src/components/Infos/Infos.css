@@ -1,0 +1,8 @@
+.infos {
+    width: 100%;
+    padding: 20px 0px;
+    text-align: center;
+    color: white;
+    background-color: #bdc3c7;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2)
+}

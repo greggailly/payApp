@@ -1,0 +1,13 @@
+@import url("../../../styles/colors.css");
+
+.listItem {
+    width: 80%;
+}
+
+.trash:hover {
+    cursor: pointer;
+}
+
+.trash {
+    color: var(--danger);
+}
