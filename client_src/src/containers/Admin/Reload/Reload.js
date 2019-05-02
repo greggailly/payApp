@@ -6,7 +6,16 @@ import { Button } from 'react-bootstrap'
 class Reload extends Component {
     state = {
         badge: '',
-        value: 0
+        value: 0,
+        accounts: []
+    }
+
+    componentDidMount() {
+        const token = localStorage.getItem('payToken')
+        api('get', '/accounts', null, token)
+            .then(res => {
+                this.setState({ accounts: res.data.accounts })
+            })
     }
 
     handleChangeBadge = e => {
@@ -25,6 +34,17 @@ class Reload extends Component {
         const token = localStorage.getItem('payToken')
         api('post', 'users', user, token)
             .then(res => {
+                var caisseAccount = this.state.accounts.find(account => account.name === 'Caisse')
+                var value = parseFloat(caisseAccount.value)
+                value = value + parseFloat(this.state.value)
+                caisseAccount.value = value
+                api('put', `/accounts/${caisseAccount._id}`, caisseAccount, token)
+                    .then(caisseRes => {
+                        console.log(caisseRes)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
                 this.setState({ badge: '', value: '' })
             })
             .catch(err => {

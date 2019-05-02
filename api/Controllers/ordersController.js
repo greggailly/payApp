@@ -28,18 +28,10 @@ exports.order_post = (req, res, next) => {
                             user.solde -= order.price
                             user.save()
                                 .then(success => {
-                                    Account.findOne({ name: 'Caisse' })
-                                        .then(caisse => {
-                                            console.log('caisse found')
-                                            caisse.value += order.price
-                                            caisse.save()
-                                                .then(final => {
-                                                    return res.status(200).json({ totalPrice: totalPrice })
-                                                })
-                                                .catch(err => {
-                                                    return res.status(500).json({ error: err, message: "failed to validate order" })
-                                                })
-                                        })
+                                    return res.status(200).json({ totalPrice: totalPrice })
+                                })
+                                .catch(err => {
+                                    return res.status(500).json({ error: err, message: "failed to validate order" })
                                 })
                         })
                 })
