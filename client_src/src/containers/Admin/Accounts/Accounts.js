@@ -5,7 +5,9 @@ import { Button } from 'react-bootstrap'
 
 class Accounts extends Component {
     state = {
-        accounts: []
+        accounts: [],
+        name: '',
+        value: 0
     }
 
     componentDidMount() {
@@ -52,6 +54,30 @@ class Accounts extends Component {
             })
     }
 
+    handleChangeNewName = e => {
+        this.setState({ name: e.target.value })
+    }
+
+    handleChangeNewValue = e => {
+        this.setState({ value: e.target.value })
+    }
+
+    handleNew = e => {
+        e.preventDefault()
+        const account = {
+            name: this.state.name,
+            value: this.state.value
+        }
+        api('post', '/accounts', account)
+            .then(res => {
+                this.setState({
+                    accounts: this.state.accounts.concat(account),
+                    name: '',
+                    value: 0
+                })
+            })
+    }
+
     render() {
         const accounts = this.state.accounts.map((account, i) => {
             return (
@@ -83,9 +109,24 @@ class Accounts extends Component {
                     </thead>
                     <tbody>
                         {accounts}
+                        <tr className="text-center" >
+                            <td>
+                                <div className="row justify-content-center">
+                                    <div className="col-md-3"><input className="form-control" value={this.state.name} onChange={this.handleChangeNewName} /></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div className="row justify-content-center">
+                                    <div className="col-md-3"><input className="form-control" value={this.state.value} onChange={this.handleChangeNewValue} /></div>
+                                </div>
+                            </td>
+                            <td>
+                                <Button className="mr-2" variant="success" onClick={this.handleNew}><i className="fas fa-check"></i></Button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
-            </div>
+            </div >
         )
     }
 }
