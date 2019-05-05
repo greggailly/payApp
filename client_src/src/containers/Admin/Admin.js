@@ -1,18 +1,26 @@
 import React, { Component } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
+import { Dropdown, Navbar, NavDropdown, Nav } from 'react-bootstrap'
 
 import './Admin.css'
 
 class Admin extends Component {
     render() {
         return (
-            <div className="admin d-flex justify-content-stretch">
-                <NavLink to="/shop/reload" className="btn btn-sidebar">Recharger</NavLink>
-                <NavLink to="/shop/users" className="btn btn-sidebar">Utilisateurs</NavLink>
-                <NavLink to="/shop/products" className="btn btn-sidebar">Produits</NavLink>
-                <NavLink to="/shop/accounts" className="btn btn-sidebar">Comptes</NavLink>
-                <NavLink to="/shop" className="btn btn-sidebar">Retour</NavLink>
-            </div>
+            <Navbar className="navbar" expand="lg">
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="mr-auto">
+                        <NavLink to="/shop" className="navlink">React-Bootstrap</NavLink>
+                        <NavLink to="/shop" className="navlink">React-Bootstrap</NavLink>
+                        <NavDropdown title="Dropdown" id="basic-nav-dropdown" className="navlink">
+                            <NavDropdown.Item><NavLink to="/shop" className="navlink">React-Bootstrap</NavLink></NavDropdown.Item>
+                            <NavDropdown.Item><NavLink to="/shop" className="navlink">React-Bootstrap</NavLink></NavDropdown.Item>
+                            <NavDropdown.Item><NavLink to="/shop" className="navlink">React-Bootstrap</NavLink></NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
         )
     }
 }

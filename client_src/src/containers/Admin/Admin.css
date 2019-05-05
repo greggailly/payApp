@@ -6,3 +6,12 @@
     background-color: var(--bg-dark);
     box-shadow:-3px 4px 10px rgba(0,0,0,.3);
 }
+
+.navlink {
+    text-decoration: none;
+    color: white;
+}
+
+.navbar {
+    background-color: var(--primary)
+}
