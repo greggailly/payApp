@@ -10,14 +10,14 @@ class Admin extends Component {
             <Navbar className="navbar" expand="lg">
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
-                        <NavLink to="/shop" className="navlink">React-Bootstrap</NavLink>
-                        <NavLink to="/shop" className="navlink">React-Bootstrap</NavLink>
-                        <NavDropdown title="Dropdown" id="basic-nav-dropdown" className="navlink">
-                            <NavDropdown.Item><NavLink to="/shop" className="navlink">React-Bootstrap</NavLink></NavDropdown.Item>
-                            <NavDropdown.Item><NavLink to="/shop" className="navlink">React-Bootstrap</NavLink></NavDropdown.Item>
-                            <NavDropdown.Item><NavLink to="/shop" className="navlink">React-Bootstrap</NavLink></NavDropdown.Item>
+                    <Nav className="mr-auto nav">
+                        <NavLink to="/shop/reload" className="navlink">Recharger</NavLink>
+                        <NavLink to="/shop/products" className="navlink">Produits</NavLink>
+                        <NavDropdown title="Comptes" id="basic-nav-dropdown" bsPrefix="navlink">
+                            <NavDropdown.Item><NavLink to="/shop/users" className="dropdown-link">Utilisateurs</NavLink></NavDropdown.Item>
+                            <NavDropdown.Item><NavLink to="/shop/accounts" className="dropdown-link">Autre</NavLink></NavDropdown.Item>
                         </NavDropdown>
+                        <NavLink to="/shop" className="navlink">Retour</NavLink>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

@@ -7,11 +7,27 @@
     box-shadow:-3px 4px 10px rgba(0,0,0,.3);
 }
 
-.navlink {
+.navlink, .dropdown {
     text-decoration: none;
     color: white;
+    align-self: stretch;
+    text-align: center;
+    flex: 1;
 }
 
 .navbar {
-    background-color: var(--primary)
+    background-color: var(--primary);
+    height: 50px;
+}
+
+.nav {
+    display: flex;
+    width: 100%;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: stretch
+}
+
+.dropdown-link {
+    color: var(--primary)
 }
