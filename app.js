@@ -11,6 +11,7 @@ const userRoutes = require('./api/Routes/users')
 const authRoutes = require('./api/Routes/auth')
 const orderRoutes = require('./api/Routes/orders')
 const accountRoutes = require('./api/Routes/accounts')
+const categoryRoutes = require('./api/Routes/categories')
 
 //Logging on requests
 app.use(morgan('dev'))
@@ -36,6 +37,7 @@ app.use('/products', productRoutes)
 app.use('/users', userRoutes)
 app.use('/orders', orderRoutes)
 app.use('/accounts', accountRoutes)
+app.use('/categories', categoryRoutes)
 
 app.use((req, res, next) => {
     const error = new Error('Not Found')
