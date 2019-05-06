@@ -38,3 +38,18 @@ exports.order_post = (req, res, next) => {
 
         })
 }
+
+exports.order_getAll = (req, res, next) => {
+    Order.find()
+        .exec()
+        .then(result => {
+            return res.status(200).json({
+                orders: result
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({
+            error: err
+        })
+    })
+}
