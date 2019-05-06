@@ -20,6 +20,7 @@ class Admin extends Component {
                         <NavLink to="/shop" className="navlink">Retour</NavLink>
                     </Nav>
                 </Navbar.Collapse>
+                <div></div>
             </Navbar>
         )
     }
