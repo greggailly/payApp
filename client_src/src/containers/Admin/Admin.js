@@ -18,6 +18,7 @@ class Admin extends Component {
                         </NavDropdown>
                         <NavDropdown title="Produits" id="basic-nav-dropdown" bsPrefix="navlink">
                             <NavDropdown.Item><NavLink to="/shop/products" className="dropdown-link">Liste des produits</NavLink></NavDropdown.Item>
+                            <NavDropdown.Item><NavLink to="/shop/categories" className="dropdown-link">Catégories</NavLink></NavDropdown.Item>
                         </NavDropdown>
                         <NavLink to="/shop/orders" className="navlink">Commandes</NavLink>
                         <NavLink to="/shop" className="navlink">Retour</NavLink>
