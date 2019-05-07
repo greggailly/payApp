@@ -10,7 +10,9 @@ class Products extends Component {
         name: '',
         price: '',
         img: '',
-        hasChanged: false
+        hasChanged: false,
+        selectedOption: '',
+        categories: []
     }
 
     componentDidMount() {
@@ -23,6 +25,10 @@ class Products extends Component {
                     )
                 })
                 this.setState({ products })
+            })
+        api('get', '/categories', null, token)
+            .then(res => {
+                this.setState({ categories: res.data.categories })
             })
     }
 
@@ -77,11 +83,16 @@ class Products extends Component {
         this.setState({ img: e.target.value, hasChanged: true })
     }
 
+    handleNewCategory = e => {
+        this.setState({ selectedOption: e.target.value })
+    }
+
     handleNew = e => {
         const product = {
             name: this.state.name,
             price: this.state.price,
-            img: this.state.img
+            img: this.state.img,
+            category: this.state.selectedOption
         }
         const token = localStorage.getItem('payToken')
         api('post', '/products', product, token)
@@ -90,6 +101,7 @@ class Products extends Component {
                     name: '',
                     price: '',
                     img: '',
+                    selectedOption: null,
                     hasChanged: false,
                     products: this.state.products.concat(product)
                 })
@@ -116,13 +128,24 @@ class Products extends Component {
 
 
     render() {
+        const options = this.state.categories.map((category, i) => {
+            return (
+                <option key={i} value={category._id}>{category.name}</option>
+            )
+        })
+
         const productsList = this.state.products.map((product, i) => {
             return (
                 <div key={i} className="row text-center mb-3" >
-                    <div className="col-md-3"><input className="form-control" id={i} value={product.name} onChange={this.handleChangeName} /></div>
+                    <div className="col-md-2"><input className="form-control" id={i} value={product.name} onChange={this.handleChangeName} /></div>
                     <div className="col-md-2"><input type="number" className="form-control" id={i} value={product.price} onChange={this.handleChangePrice} /></div>
-                    <div className="col-md-3"><input className="form-control" id={i} value={product.img} onChange={this.handleChangeImg} /></div>
-                    <div className="col-md-4">
+                    <div className="col-md-2"><input className="form-control" id={i} value={product.img} onChange={this.handleChangeImg} /></div>
+                    <div className="col-md-3">
+                        <select value={product.category.name} onChange={this.handleNewCategory} className="form-control">
+                            {options}
+                        </select>
+                    </div>
+                    <div className="col-md-3">
                         <Button className="mr-2" variant="success" id={i} onClick={this.handleSubmit} disabled={!product.hasChanged ? true : false}><i className="fas fa-check"></i></Button>
                         <Button variant="danger" id={i} onClick={this.handleDelete}><i className="fas fa-trash-alt"></i></Button>
                     </div>
@@ -133,17 +156,24 @@ class Products extends Component {
         return (
             <div className="m-5">
                 <div className="row text-center mb-3" >
-                    <div className="col-md-3">Nom</div>
+                    <div className="col-md-2">Nom</div>
                     <div className="col-md-2">Prix</div>
-                    <div className="col-md-3">Image</div>
-                    <div className="col-md-4"></div>
+                    <div className="col-md-2">Image</div>
+                    <div className="col-md-3">Catégorie</div>
+                    <div className="col-md-3"></div>
                 </div>
                 {productsList}
                 <div className="row text-center mb-3" >
-                    <div className="col-md-3"><input className="form-control" value={this.state.name} onChange={this.handleNewName} /></div>
+                    <div className="col-md-2"><input className="form-control" value={this.state.name} onChange={this.handleNewName} /></div>
                     <div className="col-md-2"><input type="number" className="form-control" value={this.state.price} onChange={this.handleNewPrice} /></div>
-                    <div className="col-md-3"><input className="form-control" value={this.state.img} onChange={this.handleNewImg} /></div>
-                    <div className="col-md-4">
+                    <div className="col-md-2"><input className="form-control" value={this.state.img} onChange={this.handleNewImg} /></div>
+                    <div className="col-md-3">
+                        <select value={this.state.selectedOption} onChange={this.handleNewCategory} className="form-control" required>
+                            <option value="">Choosir Catégorie</option>
+                            {options}
+                        </select>
+                    </div>
+                    <div className="col-md-3">
                         <Button className="mr-2" variant="success" onClick={this.handleNew} disabled={!this.state.hasChanged ? true : false}>Créer</Button>
                     </div>
                 </div>

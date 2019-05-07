@@ -8,6 +8,7 @@ import ProductsList from './ProductsList/ProductsList';
 import Users from '../Admin/Users/Users'
 import Reload from './../Admin/Reload/Reload'
 import Products from './../Admin/Products/Products'
+import Categories from './../Admin/Categories/Categories'
 import Accounts from './../Admin/Accounts/Accounts'
 
 
@@ -39,6 +40,7 @@ class Shop extends Component {
                 <Route path={this.props.match.path + '/reload'} component={Reload} />
                 <Route path={this.props.match.path + '/users'} component={Users} />
                 <Route path={this.props.match.path + '/products'} component={Products} />
+                <Route path={this.props.match.path + '/categories'} component={Categories} />
                 <Route path={this.props.match.path + '/accounts'} component={Accounts} />
                 <Route exact path="/shop" component={ProductsList} />
             </Switch>
