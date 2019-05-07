@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { NavLink, Link } from 'react-router-dom'
-import { Dropdown, Navbar, NavDropdown, Nav } from 'react-bootstrap'
+import { NavLink } from 'react-router-dom'
+import { Navbar, NavDropdown, Nav } from 'react-bootstrap'
 
 import './Admin.css'
 
@@ -18,7 +18,6 @@ class Admin extends Component {
                         </NavDropdown>
                         <NavDropdown title="Produits" id="basic-nav-dropdown" bsPrefix="navlink">
                             <NavDropdown.Item><NavLink to="/shop/products" className="dropdown-link">Liste des produits</NavLink></NavDropdown.Item>
-                            <NavDropdown.Item><NavLink to="/shop/categories" className="dropdown-link">Catégories</NavLink></NavDropdown.Item>
                         </NavDropdown>
                         <NavLink to="/shop/orders" className="navlink">Commandes</NavLink>
                         <NavLink to="/shop" className="navlink">Retour</NavLink>
