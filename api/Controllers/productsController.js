@@ -21,6 +21,7 @@ exports.product_post = (req, res, next) => {
 
 exports.products_get_all = (req, res, next) => {
     Product.find()
+        .populate('category')
         .exec()
         .then(products => {
             res.status(200).json({

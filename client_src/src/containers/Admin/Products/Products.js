@@ -56,6 +56,15 @@ class Products extends Component {
         this.setState({ products })
     }
 
+    handleChangeCategory = e => {
+        const id = e.target.id
+        var products = this.state.products
+        const category = this.state.categories.find(category => category._id == e.target.value)
+        products[id].category = category
+        products[id].hasChanged = true
+        this.setState({ products })
+    }
+
     handleSubmit = e => {
         const id = e.currentTarget.id
         const productId = this.state.products[id]._id
@@ -141,7 +150,7 @@ class Products extends Component {
                     <div className="col-md-2"><input type="number" className="form-control" id={i} value={product.price} onChange={this.handleChangePrice} /></div>
                     <div className="col-md-2"><input className="form-control" id={i} value={product.img} onChange={this.handleChangeImg} /></div>
                     <div className="col-md-3">
-                        <select value={product.category.name} onChange={this.handleNewCategory} className="form-control">
+                        <select id={i} value={product.category._id} onChange={this.handleChangeCategory} className="form-control">
                             {options}
                         </select>
                     </div>
