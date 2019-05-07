@@ -41,7 +41,7 @@ exports.read = (req, res, next) => {
 exports.update = (req, res, next) => {
     Category.findById()
         .then(category => {
-            //Update category
+            category.name = req.body.name
             return category.save()
         })
         .then(result => {

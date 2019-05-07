@@ -10,8 +10,7 @@
     "react-dom": "^16.8.4",
     "react-router": "^4.4.0",
     "react-router-dom": "^4.4.0",
-    "react-scripts": "2.1.8",
-    "react-transition-group": "^2.7.0"
+    "react-scripts": "2.1.8"
   },
   "scripts": {
     "start": "react-scripts start",
