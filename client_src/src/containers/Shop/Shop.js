@@ -9,6 +9,7 @@ import Users from '../Admin/Users/Users'
 import Reload from './../Admin/Reload/Reload'
 import Products from './../Admin/Products/Products'
 import Accounts from './../Admin/Accounts/Accounts'
+import Orders from './../Admin/Orders/Orders'
 
 
 import './Shop.css'
@@ -40,6 +41,7 @@ class Shop extends Component {
                 <Route path={this.props.match.path + '/users'} component={Users} />
                 <Route path={this.props.match.path + '/products'} component={Products} />
                 <Route path={this.props.match.path + '/accounts'} component={Accounts} />
+                <Route path={this.props.match.path + '/orders'} component={Orders} />
                 <Route exact path="/shop" component={ProductsList} />
             </Switch>
         )

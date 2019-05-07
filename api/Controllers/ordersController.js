@@ -18,7 +18,7 @@ exports.order_post = (req, res, next) => {
             const order = new Order({
                 _id: new mongoose.Types.ObjectId,
                 list: list,
-                price: totalPrice,
+                price: totalPrice.toFixed(2),
                 userId: userId
             })
             order.save()
@@ -36,5 +36,21 @@ exports.order_post = (req, res, next) => {
                         })
                 })
 
+        })
+}
+
+exports.order_getAll = (req, res, next) => {
+    Order.find()
+        .populate('userId')
+        .exec()
+        .then(result => {
+            return res.status(200).json({
+                orders: result
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({
+                error: err
+            })
         })
 }
