@@ -10,7 +10,7 @@ class ProductsList extends Component {
     render() {
         return (
             <div className="container-fluid">
-                <div className="row">
+                <div className="row fullHeight">
                     <div className="col-md catbar">
                         <Catbar categories={this.context.state.categories} />
                     </div>
