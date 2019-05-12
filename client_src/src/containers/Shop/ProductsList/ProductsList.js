@@ -7,10 +7,6 @@ import { PayContext } from './../../../utils/PayProvider'
 import './ProductsList.css'
 
 class ProductsList extends Component {
-    componentDidMount() {
-        this.context.getCategories()
-    }
-
     render() {
         return (
             <div className="container-fluid">

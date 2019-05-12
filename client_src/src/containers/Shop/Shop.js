@@ -25,6 +25,7 @@ class Shop extends Component {
     componentDidMount() {
         this.context.checkLogin()
         this.context.getProducts()
+        this.context.getCategories()
     }
 
     render() {
