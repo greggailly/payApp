@@ -10,6 +10,7 @@ class Products extends Component {
         name: '',
         price: '',
         img: '',
+        starred: false,
         hasChanged: false,
         selectedOption: '',
         categories: []
@@ -56,10 +57,18 @@ class Products extends Component {
         this.setState({ products })
     }
 
+    handleChangeStarred = e => {
+        const id = e.target.id
+        var products = this.state.products
+        products[id].starred = e.target.checked
+        products[id].hasChanged = true
+        this.setState({ products })
+    }
+
     handleChangeCategory = e => {
         const id = e.target.id
         var products = this.state.products
-        const category = this.state.categories.find(category => category._id == e.target.value)
+        const category = this.state.categories.find(category => category._id === e.target.value)
         products[id].category = category
         products[id].hasChanged = true
         this.setState({ products })
@@ -96,11 +105,16 @@ class Products extends Component {
         this.setState({ selectedOption: e.target.value })
     }
 
+    handleNewStarred = e => {
+        this.setState({ starred: e.target.checked })
+    }
+
     handleNew = e => {
         const product = {
             name: this.state.name,
             price: this.state.price,
             img: this.state.img,
+            starred: this.state.starred,
             category: this.state.selectedOption
         }
         const token = localStorage.getItem('payToken')
@@ -110,6 +124,7 @@ class Products extends Component {
                     name: '',
                     price: '',
                     img: '',
+                    starred: false,
                     selectedOption: null,
                     hasChanged: false,
                     products: this.state.products.concat(product)
@@ -154,7 +169,8 @@ class Products extends Component {
                             {options}
                         </select>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-1"><input id={i} className="form-control" type="checkbox" checked={product.starred} onChange={this.handleChangeStarred} /></div>
+                    <div className="col-md-2">
                         <Button className="mr-2" variant="success" id={i} onClick={this.handleSubmit} disabled={!product.hasChanged ? true : false}><i className="fas fa-check"></i></Button>
                         <Button variant="danger" id={i} onClick={this.handleDelete}><i className="fas fa-trash-alt"></i></Button>
                     </div>
@@ -169,7 +185,8 @@ class Products extends Component {
                     <div className="col-md-2">Prix</div>
                     <div className="col-md-2">Image</div>
                     <div className="col-md-3">Catégorie</div>
-                    <div className="col-md-3"></div>
+                    <div className="col-md-1">Starred</div>
+                    <div className="col-md-2"></div>
                 </div>
                 {productsList}
                 <div className="row text-center mb-3" >
@@ -182,7 +199,8 @@ class Products extends Component {
                             {options}
                         </select>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-1"><input type="checkbox" className="form-control" checked={this.state.starred} onChange={this.handleNewStarred} /></div>
+                    <div className="col-md-2">
                         <Button className="mr-2" variant="success" onClick={this.handleNew} disabled={!this.state.hasChanged ? true : false}>Créer</Button>
                     </div>
                 </div>

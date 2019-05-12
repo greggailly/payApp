@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 
 import api from './axios'
-import Categories from './../containers/Admin/Categories/Categories';
 
 export const PayContext = React.createContext()
 
