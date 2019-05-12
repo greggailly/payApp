@@ -15,6 +15,9 @@ const Catbar = (props) => {
 
     return (
         <div>
+            <Link to="/shop">
+                <Button variant="catbar" className="mt-auto"><h3>Accueil</h3></Button>
+            </Link>
             {categories}
         </div>
     )
