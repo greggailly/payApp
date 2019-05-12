@@ -8,6 +8,7 @@ const productsController = require('../Controllers/productsController')
 //Multiple products operations
 router.get('/', checkAuth.is_authenticated, productsController.products_get_all)
 router.post('/', productsController.product_post)
+router.delete('/', productsController.delete_all)
 
 //Single product operations
 router.get('/:productId', productsController.product_get)

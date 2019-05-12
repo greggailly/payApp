@@ -82,3 +82,14 @@ exports.product_delete = (req, res, next) => {
             console.log(err)
         })
 }
+
+exports.delete_all = (req, res, next) => {
+    Product.deleteMany()
+        .exec()
+        .then(res => {
+            console.log(res)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
