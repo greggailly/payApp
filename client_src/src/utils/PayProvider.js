@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import api from './axios'
+import Categories from './../containers/Admin/Categories/Categories';
 
 export const PayContext = React.createContext()
 
@@ -15,7 +16,19 @@ export class PayProvider extends Component {
         orderValidated: false,
         error: null,
         isLoading: false,
-        category: null
+        category: null,
+        categories: []
+    }
+
+    getCategories = () => {
+        const token = localStorage.getItem('payToken')
+        api('get', '/categories', null, token)
+            .then(res => {
+                this.setState({ categories: res.data.categories })
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     login = (badge) => {
@@ -80,12 +93,6 @@ export class PayProvider extends Component {
         })
     }
 
-    setCategory = category => {
-        this.setState({ category })
-    }
-
-
-
     render() {
         return (
             <PayContext.Provider value={{
@@ -97,7 +104,7 @@ export class PayProvider extends Component {
                 clickProduct: this.clickProduct,
                 removeItem: this.removeItem,
                 validate: this.validate,
-                setCategory: this.setCategory
+                getCategories: this.getCategories
             }}>
                 {this.props.children}
             </PayContext.Provider>

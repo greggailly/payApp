@@ -57,7 +57,7 @@ class Shop extends Component {
         return (
             <div className="container-fluid background">
                 <div className="row">
-                    <div className="col-md-9">
+                    <div className="col-md-9 no-padding">
                         {this.context.state.user.isAdmin ? adminBar : null}
                         {this.context.state.user.isAdmin ? admin : user}
 
