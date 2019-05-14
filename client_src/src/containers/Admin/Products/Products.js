@@ -102,7 +102,7 @@ class Products extends Component {
     }
 
     handleNewCategory = e => {
-        this.setState({ selectedOption: e.target.value })
+        this.setState({ selectedOption: e.target.value, hasChanged: true })
     }
 
     handleNewStarred = e => {
@@ -125,7 +125,7 @@ class Products extends Component {
                     price: '',
                     img: '',
                     starred: false,
-                    selectedOption: null,
+                    selectedOption: '',
                     hasChanged: false,
                     products: this.state.products.concat(product)
                 })

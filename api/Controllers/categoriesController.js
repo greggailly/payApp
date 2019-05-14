@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 
 exports.create = (req, res, next) => {
     const category = new Category()
+    category.name = req.body.name
     category.save()
         .then(result => {
             res.status(200).json({
