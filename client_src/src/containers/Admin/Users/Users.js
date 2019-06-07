@@ -13,15 +13,13 @@ class Users extends Component {
         isAdmin: false
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const token = localStorage.getItem('payToken')
-        api('get', '/users', null, token)
-            .then(res => {
-                const users = res.data.users.map(user => {
-                    return { ...user, hasChanged: false }
-                })
-                this.setState({ users })
-            })
+        const res = await api('get', '/users', null, token)
+        const users = res.data.users.map(user => {
+            return { ...user, hasChanged: false }
+        })
+        this.setState({ users })
     }
 
     handleChangeName = e => {
@@ -48,34 +46,32 @@ class Users extends Component {
         this.setState({ users })
     }
 
-    handleSubmit = e => {
+    handleSubmit = async e => {
         const id = e.currentTarget.id
         const userId = this.state.users[id]._id
         const token = localStorage.getItem('payToken')
-        api('put', `/users/${userId}`, this.state.users[id], token)
-            .then(res => {
-                var users = this.state.users
-                users[id].hasChanged = false
-                this.setState({ users })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        try {
+            await api('put', `/users/${userId}`, this.state.users[id], token)
+            var users = this.state.users
+            users[id].hasChanged = false
+            this.setState({ users })
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
-    handleDelete = e => {
+    handleDelete = async e => {
         const id = e.currentTarget.id
         const userId = this.state.users[id]._id
         const token = localStorage.getItem('payToken')
-        api('delete', `/users/${userId}`, null, token)
-            .then(res => {
-                var users = this.state.users
-                users.splice(id, 1)
-                this.setState({ users })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        try {
+            await api('delete', `/users/${userId}`, null, token)
+            var users = this.state.users
+            users.splice(id, 1)
+            this.setState({ users })
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
     handleNewName = e => {
@@ -90,18 +86,20 @@ class Users extends Component {
         this.setState({ isAdmin: !this.state.isAdmin, hasChanged: true })
     }
 
-    handleNew = e => {
+    handleNew = async e => {
         const user = {
             username: this.state.newName,
             badge: this.state.newBadge,
             isAdmin: this.state.isAdmin
         }
         const token = localStorage.getItem('payToken')
-        api('put', 'signup', user, token)
-            .then(res => {
-                const users = this.state.users.concat(res.data.createdUser)
-                this.setState({ newName: '', newBadge: '', hasChanged: false, users })
-            })
+        try {
+            const res = await api('put', 'signup', user, token)
+            const users = this.state.users.concat(res.data.createdUser)
+            this.setState({ newName: '', newBadge: '', hasChanged: false, users })
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
     render() {

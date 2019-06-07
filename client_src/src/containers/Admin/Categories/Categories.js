@@ -7,12 +7,10 @@ class Categories extends Component {
         categories: []
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const token = localStorage.getItem('payToken')
-        api('get', '/categories', null, token)
-            .then(res => {
-                this.setState({ categories: res.data.categories })
-            })
+        const res = await api('get', '/categories', null, token)
+        this.setState({ categories: res.data.categories })
     }
 
     render() {

@@ -10,12 +10,10 @@ class Accounts extends Component {
         value: 0
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const token = localStorage.getItem('payToken')
-        api('get', '/accounts', null, token)
-            .then(res => {
-                this.setState({ accounts: res.data.accounts })
-            })
+        const res = await api('get', '/accounts', null, token)
+        this.setState({ accounts: res.data.accounts })
     }
 
     handleChangeValue = e => {
@@ -26,32 +24,29 @@ class Accounts extends Component {
         this.setState({ accounts })
     }
 
-    handleSubmit = e => {
+    handleSubmit = async e => {
         const id = e.currentTarget.id
         const accountId = this.state.accounts[id]._id
         const token = localStorage.getItem('payToken')
-        api('put', `/accounts/${accountId}`, this.state.accounts[id], token)
-            .then(res => {
-                console.log(res)
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        try {
+            await api('put', `/accounts/${accountId}`, this.state.accounts[id], token)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    handleDelete = e => {
+    handleDelete = async e => {
         const id = e.currentTarget.id
         const accountId = this.state.accounts[id]._id
         const token = localStorage.getItem('payToken')
-        api('delete', `/accounts/${accountId}`, null, token)
-            .then(res => {
-                var accounts = this.state.accounts
-                accounts.splice(id, 1)
-                this.setState({ accounts })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        try {
+            await api('delete', `/accounts/${accountId}`, null, token)
+            var accounts = this.state.accounts
+            accounts.splice(id, 1)
+            this.setState({ accounts })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     handleChangeNewName = e => {
@@ -62,21 +57,18 @@ class Accounts extends Component {
         this.setState({ value: e.target.value })
     }
 
-    handleNew = e => {
+    handleNew = async e => {
         e.preventDefault()
         const account = {
             name: this.state.name,
             value: this.state.value
         }
-        api('post', '/accounts', account)
-            .then(res => {
-                console.log(res)
-                this.setState({
-                    accounts: this.state.accounts.concat(res.data.account),
-                    name: '',
-                    value: 0
-                })
-            })
+        const res = await api('post', '/accounts', account)
+        this.setState({
+            accounts: this.state.accounts.concat(res.data.account),
+            name: '',
+            value: 0
+        })
     }
 
     render() {

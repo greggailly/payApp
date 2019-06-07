@@ -8,12 +8,10 @@ class Orders extends Component {
         orders: [],
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const token = localStorage.getItem('payToken')
-        api('get', '/orders', null, token)
-            .then(res => {
-                this.setState({ orders: res.data.orders })
-            })
+        const res = await api('get', '/orders', null, token)
+        this.setState({ orders: res.data.orders })
     }
 
     render() {

@@ -13,18 +13,13 @@ class Sidebar extends Component {
         orderValidated: false
     }
 
-    validate = () => {
+    validate = async () => {
         const token = localStorage.getItem('payToken')
-        api('post', 'orders', {
+        await api('post', 'orders', {
             list: this.context.state.list,
             userId: this.context.state.user._id
         }, token)
-            .then(res => {
-                this.setState({ orderValidated: true })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        this.setState({ orderValidated: true })
     }
 
     render() {

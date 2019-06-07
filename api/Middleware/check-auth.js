@@ -20,26 +20,23 @@ exports.is_authenticated = (req, res, next) => {
     }
 }
 
-exports.is_authorized = (req, res, next) => {
+exports.is_authorized = async (req, res, next) => {
     const id = req.userId
     if (!id) {
         const error = new Error('Authentication failed')
         error.status = 401
         throw error
     }
-    User.findById(id)
-        .then(user => {
-            if (user.isAdmin) {
-                next()
-            } else {
-                const error = new Error('Authorization failed')
-                error.status = 401
-                throw error
-            }
-        })
-        .catch(err => {
-            return res.status(err.status).json({
-                error: err
-            })
-        })
+    try {
+        const user = await User.findById(id)
+        if (user.isAdmin) {
+            next()
+        } else {
+            const error = new Error('Authorization failed')
+            error.status = 401
+            throw error
+        }
+    } catch (error) {
+        throw new Error(error)
+    }
 }

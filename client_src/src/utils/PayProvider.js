@@ -19,41 +19,37 @@ export class PayProvider extends Component {
         categories: []
     }
 
-    getCategories = () => {
+    getCategories = async () => {
         const token = localStorage.getItem('payToken')
-        api('get', '/categories', null, token)
-            .then(res => {
-                this.setState({ categories: res.data.categories })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        try {
+            const res = await api('get', '/categories', null, token)
+            this.setState({ categories: res.data.categories })
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
-    login = (badge) => {
+    login = async (badge) => {
         this.setState({ isLoading: true })
         this.setState({ error: null })
-        api('post', '/login', { badge: badge })
-            .then(res => {
-                localStorage.setItem('payToken', res.data.token)
-                localStorage.setItem('userId', res.data.user._id)
-                this.setState({ user: res.data.user, isAuthenticated: true, isLoading: false })
-            })
-            .catch(err => {
-                const error = new Error("Impossible de vous connecter...")
-                error.statusCode = 401;
-                this.setState({ error, isLoading: false })
-            })
+        try {
+            const res = await api('post', '/login', { badge: badge })
+            localStorage.setItem('payToken', res.data.token)
+            localStorage.setItem('userId', res.data.user._id)
+            this.setState({ user: res.data.user, isAuthenticated: true, isLoading: false })
+        } catch (error) {
+            const err = new Error("Impossible de vous connecter...")
+            err.statusCode = 401;
+            this.setState({ err, isLoading: false })
+        }
     }
 
-    checkLogin = () => {
+    checkLogin = async () => {
         const userId = localStorage.getItem('userId')
         if (userId && this.state.username == null) {
             const token = localStorage.getItem('payToken')
-            api('get', `/users/${userId}`, null, token)
-                .then(res => {
-                    this.setState({ user: res.data.user, isAuthenticated: true })
-                })
+            const res = await api('get', `/users/${userId}`, null, token)
+            this.setState({ user: res.data.user, isAuthenticated: true })
         }
     }
 
@@ -63,16 +59,14 @@ export class PayProvider extends Component {
         localStorage.removeItem('userId')
     }
 
-    getProducts = () => {
+    getProducts = async () => {
         const token = localStorage.getItem('payToken')
-        api('get', '/products', null, token)
-            .then(res => {
-                var products = []
-                res.data.products.forEach(product => {
-                    products.push(product)
-                });
-                this.setState({ products })
-            })
+        const res = await api('get', '/products', null, token)
+        var products = []
+        res.data.products.forEach(product => {
+            products.push(product)
+        });
+        this.setState({ products })
     }
 
     clickProduct = (product) => {

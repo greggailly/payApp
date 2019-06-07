@@ -16,21 +16,17 @@ class Products extends Component {
         categories: []
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const token = localStorage.getItem('payToken')
-        api('get', '/products', null, token)
-            .then(res => {
-                var products = res.data.products.map(product => {
-                    return (
-                        { ...product, hasChanged: false }
-                    )
-                })
-                this.setState({ products })
-            })
-        api('get', '/categories', null, token)
-            .then(res => {
-                this.setState({ categories: res.data.categories })
-            })
+        var res = await api('get', '/products', null, token)
+        var products = res.data.products.map(product => {
+            return (
+                { ...product, hasChanged: false }
+            )
+        })
+        this.setState({ products })
+        res = await api('get', '/categories', null, token)
+        this.setState({ categories: res.data.categories })
     }
 
     handleChangeName = e => {
@@ -74,19 +70,18 @@ class Products extends Component {
         this.setState({ products })
     }
 
-    handleSubmit = e => {
+    handleSubmit = async e => {
         const id = e.currentTarget.id
         const productId = this.state.products[id]._id
         const token = localStorage.getItem('payToken')
-        api('put', `/products/${productId}`, this.state.products[id], token)
-            .then(res => {
-                var products = this.state.products
-                products[id].hasChanged = false
-                this.setState({ products })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        try {
+            await api('put', `/products/${productId}`, this.state.products[id], token)
+            var products = this.state.products
+            products[id].hasChanged = false
+            this.setState({ products })
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
     handleNewName = e => {
@@ -109,7 +104,7 @@ class Products extends Component {
         this.setState({ starred: e.target.checked })
     }
 
-    handleNew = e => {
+    handleNew = async e => {
         const product = {
             name: this.state.name,
             price: this.state.price,
@@ -118,36 +113,34 @@ class Products extends Component {
             category: this.state.selectedOption
         }
         const token = localStorage.getItem('payToken')
-        api('post', '/products', product, token)
-            .then(res => {
-                this.setState({
-                    name: '',
-                    price: '',
-                    img: '',
-                    starred: false,
-                    selectedOption: '',
-                    hasChanged: false,
-                    products: this.state.products.concat(res.data.createdProduct)
-                })
+        try {
+            const res = await api('post', '/products', product, token)
+            this.setState({
+                name: '',
+                price: '',
+                img: '',
+                starred: false,
+                selectedOption: '',
+                hasChanged: false,
+                products: this.state.products.concat(res.data.createdProduct)
             })
-            .catch(err => {
-                console.log(err)
-            })
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
-    handleDelete = e => {
+    handleDelete = async e => {
         const id = e.currentTarget.id
         const productId = this.state.products[id]._id
         const token = localStorage.getItem('payToken')
-        api('delete', `/products/${productId}`, null, token)
-            .then(res => {
-                var products = this.state.products
-                products.splice(id, 1)
-                this.setState({ products })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        try {
+            await api('delete', `/products/${productId}`, null, token)
+            var products = this.state.products
+            products.splice(id, 1)
+            this.setState({ products })
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
 

@@ -39,18 +39,13 @@ exports.order_post = (req, res, next) => {
         })
 }
 
-exports.order_getAll = (req, res, next) => {
-    Order.find()
-        .populate('userId')
-        .exec()
-        .then(result => {
-            return res.status(200).json({
-                orders: result
-            })
+exports.order_getAll = async (req, res, next) => {
+    try {
+        const result = await Order.find().populate('userId').exec()
+        return res.status(200).json({
+            orders: result
         })
-        .catch(err => {
-            return res.status(500).json({
-                error: err
-            })
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }

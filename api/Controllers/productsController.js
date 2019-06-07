@@ -63,7 +63,7 @@ exports.product_update = async (req, res, next) => {
 
 exports.product_delete = async (req, res, next) => {
     try {
-        Product.findById(req.params.productId).remove().exec()
+        const product = await Product.findById(req.params.productId).remove().exec()
         res.status(200).json({
             product: product
         })

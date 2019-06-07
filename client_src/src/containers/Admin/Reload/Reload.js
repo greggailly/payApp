@@ -10,12 +10,10 @@ class Reload extends Component {
         accounts: []
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const token = localStorage.getItem('payToken')
-        api('get', '/accounts', null, token)
-            .then(res => {
-                this.setState({ accounts: res.data.accounts })
-            })
+        const res = await api('get', '/accounts', null, token)
+        this.setState({ accounts: res.data.accounts })
     }
 
     handleChangeBadge = e => {
@@ -26,30 +24,23 @@ class Reload extends Component {
         this.setState({ value: e.target.value })
     }
 
-    handleSubmit = e => {
+    handleSubmit = async e => {
         const user = {
             badge: this.state.badge,
             solde: this.state.value
         }
         const token = localStorage.getItem('payToken')
-        api('post', 'users', user, token)
-            .then(res => {
-                var caisseAccount = this.state.accounts.find(account => account.name === 'Caisse')
-                var value = parseFloat(caisseAccount.value)
-                value = value + parseFloat(this.state.value)
-                caisseAccount.value = value
-                api('put', `/accounts/${caisseAccount._id}`, caisseAccount, token)
-                    .then(caisseRes => {
-                        console.log(caisseRes)
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-                this.setState({ badge: '', value: '' })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        try {
+            await api('post', 'users', user, token)
+            var caisseAccount = this.state.accounts.find(account => account.name === 'Caisse')
+            var value = parseFloat(caisseAccount.value)
+            value = value + parseFloat(this.state.value)
+            caisseAccount.value = value
+            await api('put', `/accounts/${caisseAccount._id}`, caisseAccount, token)
+            this.setState({ badge: '', value: '' })
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
     render() {
