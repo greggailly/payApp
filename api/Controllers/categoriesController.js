@@ -1,68 +1,61 @@
 const Category = require('../Models/category')
 const mongoose = require('mongoose')
 
-exports.create = (req, res, next) => {
+exports.create = async (req, res, next) => {
     const category = new Category()
     category.name = req.body.name
-    category.save()
-        .then(result => {
-            res.status(200).json({
-                createdCategory: result
-            })
+    try {
+        const result = category.save()
+        res.status(200).json({
+            createdCategory: result
         })
-        .catch(err => {
-            throw new Error(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.readAll = (req, res, next) => {
-    Category.find()
-        .then(result => {
-            res.status(200).json({
-                categories: result
-            })
+exports.readAll = async (req, res, next) => {
+    try {
+        const result = await Category.find()
+        res.status(200).json({
+            categories: result
         })
-        .catch(err => {
-            throw new Error(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.read = (req, res, next) => {
-    Category.findById()
-        .then(result => {
-            res.status(200).json({
-                category: result
-            })
+exports.read = async (req, res, next) => {
+    try {
+        const result = Category.findById()
+        res.status(200).json({
+            category: result
         })
-        .catch(err => {
-            throw new Error(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.update = (req, res, next) => {
-    Category.findById()
-        .then(category => {
-            category.name = req.body.name
-            return category.save()
+exports.update = async (req, res, next) => {
+    try {
+        const category = await Category.findById()
+        category.name = req.body.name
+        const result = await category.save()
+        res.status(200).json({
+            updatedCategory: result
         })
-        .then(result => {
-            res.status(200).json({
-                updatedCategory: result
-            })
-        })
-        .catch(err => {
-            throw new Error(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.delete = (req, res, next) => {
-    Category.findOneAndRemove()
-        .then(result => {
-            res.status(200).json({
-                message: 'Delete Successfull'
-            })
+exports.delete = async (req, res, next) => {
+    try {
+        const result = await Category.findById(req.params.id).remove()
+        res.status(200).json({
+            message: 'Delete Successfull'
         })
-        .catch(err => {
-            throw new Error(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
