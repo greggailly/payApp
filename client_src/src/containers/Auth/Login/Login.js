@@ -36,7 +36,7 @@ class Login extends Component {
 
         let loading = <button className="btn btn-primary mt-2" onClick={this.handleErase} >Effacer</button>
         if (this.context.state.isLoading) {
-            loading = <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            loading = <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         }
 
         return (

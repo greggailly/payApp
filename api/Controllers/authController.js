@@ -14,7 +14,7 @@ exports.signup = (req, res, next) => {
         .then(user => {
             res.status(201).json({
                 message: "User created",
-                user: user
+                createdUser: user
             })
         })
         .catch(err => {

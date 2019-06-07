@@ -99,7 +99,7 @@ class Users extends Component {
         const token = localStorage.getItem('payToken')
         api('put', 'signup', user, token)
             .then(res => {
-                const users = this.state.users.concat(user)
+                const users = this.state.users.concat(res.data.createdUser)
                 this.setState({ newName: '', newBadge: '', hasChanged: false, users })
             })
     }

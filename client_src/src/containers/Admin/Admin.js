@@ -13,12 +13,12 @@ class Admin extends Component {
                     <Nav className="mr-auto nav">
                         <NavLink to="/shop/reload" className="navlink">Recharger</NavLink>
                         <NavDropdown title="Comptes" id="basic-nav-dropdown" bsPrefix="navlink">
-                            <NavDropdown.Item><NavLink to="/shop/users" className="dropdown-link">Utilisateurs</NavLink></NavDropdown.Item>
-                            <NavDropdown.Item><NavLink to="/shop/accounts" className="dropdown-link">Autre</NavLink></NavDropdown.Item>
+                            <NavDropdown.Item as="span"><NavLink to="/shop/users" className="dropdown-link">Utilisateurs</NavLink></NavDropdown.Item>
+                            <NavDropdown.Item as="span"><NavLink to="/shop/accounts" className="dropdown-link">Autre</NavLink></NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Produits" id="basic-nav-dropdown" bsPrefix="navlink">
-                            <NavDropdown.Item><NavLink to="/shop/products" className="dropdown-link">Liste des produits</NavLink></NavDropdown.Item>
-                            <NavDropdown.Item><NavLink to="/shop/categories" className="dropdown-link">Catégories</NavLink></NavDropdown.Item>
+                            <NavDropdown.Item as="span"><NavLink to="/shop/products" className="dropdown-link">Liste des produits</NavLink></NavDropdown.Item>
+                            <NavDropdown.Item as="span"><NavLink to="/shop/categories" className="dropdown-link">Catégories</NavLink></NavDropdown.Item>
                         </NavDropdown>
                         <NavLink to="/shop/orders" className="navlink">Commandes</NavLink>
                         <NavLink to="/shop" className="navlink">Retour</NavLink>

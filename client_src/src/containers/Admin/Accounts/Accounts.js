@@ -70,8 +70,9 @@ class Accounts extends Component {
         }
         api('post', '/accounts', account)
             .then(res => {
+                console.log(res)
                 this.setState({
-                    accounts: this.state.accounts.concat(account),
+                    accounts: this.state.accounts.concat(res.data.account),
                     name: '',
                     value: 0
                 })

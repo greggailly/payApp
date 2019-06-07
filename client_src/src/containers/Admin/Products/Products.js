@@ -127,7 +127,7 @@ class Products extends Component {
                     starred: false,
                     selectedOption: '',
                     hasChanged: false,
-                    products: this.state.products.concat(product)
+                    products: this.state.products.concat(res.data.createdProduct)
                 })
             })
             .catch(err => {

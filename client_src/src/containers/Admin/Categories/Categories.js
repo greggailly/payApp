@@ -18,7 +18,7 @@ class Categories extends Component {
     render() {
         const categories = this.state.categories.map((category, i) => {
             return (
-                <tr id={i}>
+                <tr key={i}>
                     <td>{category.name}</td>
                     <td></td>
                 </tr>
@@ -29,10 +29,10 @@ class Categories extends Component {
                 <div className="text-center"><h2>Liste des catégories</h2></div>
                 <table className="table table-striped">
                     <thead>
-                        <th>
-                            <td>Nom</td>
-                            <td></td>
-                        </th>
+                        <tr>
+                            <th>Nom</th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
                         {categories}
