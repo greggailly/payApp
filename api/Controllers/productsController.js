@@ -73,6 +73,6 @@ exports.product_delete = async (req, res, next) => {
 }
 
 exports.delete_all = async (req, res, next) => {
-    const res = await Product.deleteMany()
-    console.log(res)
+    const result = await Product.deleteMany()
+    console.log(result)
 }
