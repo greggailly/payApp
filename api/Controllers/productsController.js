@@ -1,7 +1,7 @@
 const Product = require('../Models/product')
 const mongoose = require('mongoose')
 
-exports.product_post = (req, res, next) => {
+exports.product_post = async (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -10,86 +10,69 @@ exports.product_post = (req, res, next) => {
         category: req.body.category,
         starred: req.body.starred
     })
-    product.save()
-        .then(result => {
-            res.status(200).json({
-                createdProduct: product
-            })
+    try {
+        const result = await product.save()
+        res.status(200).json({
+            createdProduct: result
         })
-        .catch(err => console.log(err))
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.products_get_all = (req, res, next) => {
-    Product.find()
-        .populate('category')
-        .exec()
-        .then(products => {
-            res.status(200).json({
-                products: products
-            })
+exports.products_get_all = async (req, res, next) => {
+    try {
+        const products = await Product.find().populate('category').exec()
+        res.status(200).json({
+            products: products
         })
-        .catch(err => {
-            res.status(500).json({ error: err })
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
+
 }
 
-exports.product_get = (req, res, next) => {
-    const id = req.params.productId
-    Product.findById(id)
-        .exec()
-        .then(product => {
-            res.status(200).json({
-                message: 'Handling Get request to /products',
-                product: product
-            })
+exports.product_get = async (req, res, next) => {
+    try {
+        const product = await Product.findById(req.params.productId)
+        res.status(200).json({
+            message: 'Handling Get request to /products',
+            product: product
         })
-        .catch(err => {
-            res.status(500).json({ error: err })
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.product_update = (req, res, next) => {
-    const id = req.params.productId
-    Product.findById(id)
-        .then(product => {
-            product.name = req.body.name
-            product.price = req.body.price
-            product.img = req.body.img
-            product.category = req.body.category
-            product.starred = req.body.starred
-            return product.save()
+exports.product_update = async (req, res, next) => {
+    try {
+        const product = await Product.findById(req.params.productId)
+        product.name = req.body.name
+        product.price = req.body.price
+        product.img = req.body.img
+        product.category = req.body.category
+        product.starred = req.body.starred
+        const result = await product.save()
+        return res.status(200).json({
+            message: "Product updated"
         })
-        .then(product => {
-            res.status(200).json({
-                message: "Product updated"
-            })
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.product_delete = (req, res, next) => {
-    const id = req.params.productId
-    Product.findById(id).remove()
-        .exec()
-        .then(product => {
-            res.status(200).json({
-                product: product
-            })
+exports.product_delete = async (req, res, next) => {
+    try {
+        Product.findById(req.params.productId).remove().exec()
+        res.status(200).json({
+            product: product
         })
-        .catch(err => {
-            console.log(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.delete_all = (req, res, next) => {
-    Product.deleteMany()
-        .exec()
-        .then(res => {
-            console.log(res)
-        })
-        .catch(err => {
-            console.log(err)
-        })
+exports.delete_all = async (req, res, next) => {
+    const res = await Product.deleteMany()
+    console.log(res)
 }

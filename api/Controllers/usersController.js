@@ -1,86 +1,69 @@
 const User = require('../Models/user')
 const mongoose = require('mongoose')
 
-exports.users_get_all = (req, res, next) => {
-    User.find()
-        .exec()
-        .then(users => {
-            res.status(200).json({
-                message: 'Handling Get request to /users',
-                users: users
-            })
+exports.users_get_all = async (req, res, next) => {
+    try {
+        const users = await User.find().exec()
+        res.status(200).json({
+            message: 'Handling Get request to /users',
+            users: users
         })
-        .catch(err => {
-            console.log(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.user_get = (req, res, next) => {
-    const id = req.params.userId
-    User.findById(id)
-        .then(user => {
-            res.status(200).json({
-                user: user
-            })
+exports.user_get = async (req, res, next) => {
+    try {
+        const user = User.findById(req.params.userId)
+        res.status(200).json({
+            user: user
         })
-        .catch(err => {
-            console.log(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.user_update = (req, res, next) => {
-    const id = req.params.userId
-    User.findById(id)
-        .then(user => {
-            user.username = req.body.username
-            user.badge = req.body.badge
-            user.solde = req.body.solde
-            user.isAdmin = req.body.isAdmin
-            user.save()
+exports.user_update = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.userId)
+        user.username = req.body.username
+        user.badge = req.body.badge
+        user.solde = req.body.solde
+        user.isAdmin = req.body.isAdmin
+        const result = user.save()
+        return res.status(200).json({
+            message: "User updated successfully",
+            user: user
         })
-        .then(user => {
-            res.status(200).json({
-                message: "User updated successfully",
-                user: user
-            })
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.user_reload = (req, res, next) => {
+exports.user_reload = async (req, res, next) => {
     const badge = req.body.badge
     const solde = parseFloat(req.body.solde)
-    User.findOne({ badge: badge })
-        .exec()
-        .then(user => {
-            user.solde = parseFloat(user.solde) + solde
-            user.save()
+    try {
+        const user = await User.findOne({ badge }).exec()
+        user.solde = parseFloat(user.solde) + solde
+        const result = await user.save()
+        res.status(200).json({
+            message: "User updated successfully",
+            user: result
         })
-        .then(user => {
-            res.status(200).json({
-                message: "User updated successfully",
-                user: user
-            })
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
 
-exports.user_delete = (req, res, next) => {
-    const id = req.params.userId
-    User.findById(id).remove()
-        .then(user => {
-            res.status(200).json({
-                message: 'user removed'
-            })
+exports.user_delete = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.userId).remove()
+        res.status(200).json({
+            message: 'user removed'
         })
-        .catch(err => {
-            console.log(err)
-        })
+    } catch (error) {
+        throw new Error(error)
+    }
 }
-
-
-
