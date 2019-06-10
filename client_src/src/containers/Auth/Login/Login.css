@@ -57,3 +57,7 @@
     transform: translate(19px, 0);
   }
 }
+
+.login {
+  height: 80%;
+}

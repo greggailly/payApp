@@ -10,13 +10,51 @@ class Login extends Component {
         badge: ''
     }
 
-    handleChange = e => {
-        this.setState({ badge: e.target.value })
+    _handleKey = async e => {
+        switch (e.keyCode) {
+            case 13:
+                await this.context.login(this.state.badge)
+                this.setState({ badge: '' })
+                break;
+            default:
+                var badge = this.state.badge
+                badge += e.key
+                this.setState({ badge })
+                this.setTimer()
+                break;
+        }
     }
 
-    handleSubmit = e => {
-        e.preventDefault()
-        this.context.login(this.state.badge)
+    setTimer = () => {
+        if (this.timerHandle) {
+            return;
+        }
+        this.timerHandle = setTimeout(() => {
+            this.setState({ badge: '' });
+        }, (500));
+    }
+
+    clearTimer = () => {
+        if (this.timerHandle) {
+            clearTimeout(this.timerHandle);
+            this.timerHandle = 0;
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener("keypress", this._handleKey)
+    }
+
+    componentDidUpdate() {
+        this.clearTimer()
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("keypress", this._handleKey)
+    }
+
+    handleChange = e => {
+        this.setState({ badge: e.target.value })
     }
 
     handleErase = e => {
@@ -34,7 +72,7 @@ class Login extends Component {
             error = <Alert variant="warning">{this.context.state.error.message}</Alert>
         }
 
-        let loading = <button className="btn btn-primary mt-2" onClick={this.handleErase} >Effacer</button>
+        let loading = null
         if (this.context.state.isLoading) {
             loading = <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         }
@@ -42,24 +80,12 @@ class Login extends Component {
         return (
             <div className='container-fluid background pt-5'>
                 {redirectToShop}
-                <div className='text-center'>
-                    {error}
-                    <div className='card mx-auto'>
-                        <div className='card-header bg-dark text-white'><h2>Connexion</h2></div>
-                        <div className='card-body'>
-                            <div className='col-md-6 offset-md-3'>
-                                <form className='form-group mt-3' onSubmit={this.handleSubmit}>
-                                    <input
-                                        type='password'
-                                        value={this.state.badge}
-                                        onChange={this.handleChange}
-                                        placeholder='Badge'
-                                        className='form-control'
-                                        required
-                                        autoFocus />
-                                </form>
-                                {loading}
-                            </div>
+                <div className="row login">
+                    <div className="col align-self-center">
+                        <div className='text-center'>
+                            {error}
+                            <h1>Veuillez passer votre badge...</h1>
+                            {loading}
                         </div>
                     </div>
                 </div>

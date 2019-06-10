@@ -34,9 +34,17 @@ export class PayProvider extends Component {
         this.setState({ error: null })
         try {
             const res = await api('post', '/login', { badge: badge })
-            localStorage.setItem('payToken', res.data.token)
-            localStorage.setItem('userId', res.data.user._id)
-            this.setState({ user: res.data.user, isAuthenticated: true, isLoading: false })
+            console.log(res)
+            if (res.status === 200) {
+                console.log('test')
+                localStorage.setItem('payToken', res.data.token)
+                localStorage.setItem('userId', res.data.user._id)
+                this.setState({ user: res.data.user, isAuthenticated: true, isLoading: false })
+            } else {
+                const err = new Error("Impossible de vous connecter...")
+                err.statusCode = 401;
+                this.setState({ err, isLoading: false })
+            }
         } catch (error) {
             const err = new Error("Impossible de vous connecter...")
             err.statusCode = 401;

@@ -24,10 +24,10 @@ exports.signup = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     const badge = req.body.badge
     try {
-        const user = await User.findOne({ badge: badge }).exec()
+        const user = await User.findOne({ badge: badge })
         if (!user) {
             return res.status(401).json({
-                message: 'Auth failed'
+                message: "Impossible de vous connecter"
             })
         }
         const token = jwt.sign(
@@ -47,6 +47,9 @@ exports.login = async (req, res, next) => {
             expiresIn: 3600
         })
     } catch (error) {
-        throw new Error(error)
+        return res.status(401).json({
+            message: "Impossible de vous connecter",
+            error: error
+        })
     }
 }
