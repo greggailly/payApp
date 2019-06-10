@@ -68,8 +68,8 @@ class Login extends Component {
         }
 
         let error = null
-        if (this.context.state.error != null) {
-            error = <Alert variant="warning">{this.context.state.error.message}</Alert>
+        if (this.context.state.err != null) {
+            error = <Alert variant="warning">{this.context.state.err.message}</Alert>
         }
 
         let loading = null
