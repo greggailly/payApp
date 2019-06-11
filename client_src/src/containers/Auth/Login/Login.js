@@ -45,7 +45,7 @@ class Login extends Component {
     clearMessage = () => {
         this.messageTimer = setTimeout(() => {
             this.context.clearError()
-        }, (5000));
+        }, (2500));
     }
 
     componentDidMount() {
@@ -74,14 +74,20 @@ class Login extends Component {
             redirectToShop = <Redirect to="/shop" />
         }
 
-        let error = null
-        if (this.context.state.err != null) {
-            error = <Alert variant="warning">{this.context.state.err.message}</Alert>
-        }
-
         let loading = null
-        if (this.context.state.isLoading) {
+        if (this.context.state.err === null & !this.context.state.isLoading) {
+            loading = (
+                <div class="sk-folding-cube">
+                    <div class="sk-cube1 sk-cube"></div>
+                    <div class="sk-cube2 sk-cube"></div>
+                    <div class="sk-cube4 sk-cube"></div>
+                    <div class="sk-cube3 sk-cube"></div>
+                </div>
+            )
+        } else if (this.context.state.err === null & this.context.state.isLoading) {
             loading = <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        } else if (this.context.state.err != null) {
+            loading = <Alert variant="warning" className="error">{this.context.state.err.message}</Alert>
         }
 
         return (
@@ -89,10 +95,15 @@ class Login extends Component {
                 {redirectToShop}
                 <div className="row login">
                     <div className="col align-self-center">
-                        <div className='text-center'>
-                            {error}
-                            <h1>Veuillez passer votre badge...</h1>
-                            {loading}
+                        <div className="row">
+                            <div className="col-md-12 text-center title">
+                                <h1>Veuillez passer votre badge...</h1>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-12 text-center loading">
+                                {loading}
+                            </div>
                         </div>
                     </div>
                 </div>
