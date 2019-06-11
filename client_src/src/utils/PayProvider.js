@@ -92,6 +92,10 @@ export class PayProvider extends Component {
         })
     }
 
+    clearError = () => {
+        this.setState({ err: null })
+    }
+
     render() {
         return (
             <PayContext.Provider value={{
@@ -103,7 +107,8 @@ export class PayProvider extends Component {
                 clickProduct: this.clickProduct,
                 removeItem: this.removeItem,
                 validate: this.validate,
-                getCategories: this.getCategories
+                getCategories: this.getCategories,
+                clearError: this.clearError,
             }}>
                 {this.props.children}
             </PayContext.Provider>

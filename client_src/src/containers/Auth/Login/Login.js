@@ -15,6 +15,7 @@ class Login extends Component {
             case 13:
                 await this.context.login(this.state.badge)
                 this.setState({ badge: '' })
+                this.clearMessage()
                 break;
             default:
                 var badge = this.state.badge
@@ -39,6 +40,12 @@ class Login extends Component {
             clearTimeout(this.timerHandle);
             this.timerHandle = 0;
         }
+    }
+
+    clearMessage = () => {
+        this.messageTimer = setTimeout(() => {
+            this.context.clearError()
+        }, (5000));
     }
 
     componentDidMount() {
