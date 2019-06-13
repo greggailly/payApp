@@ -15,6 +15,4 @@ const api = (method, endpoint, payload, token) => {
     )
 }
 
-
-
 export default api

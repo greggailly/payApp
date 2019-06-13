@@ -1,117 +1,104 @@
-import React, { Component } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Redirect } from 'react-router-dom';
 import { PayContext } from '../../../utils/PayProvider'
 import { Alert } from 'react-bootstrap'
 
 import './Login.css'
 
-class Login extends Component {
-    state = {
-        badge: ''
-    }
+const Login = () => {
+    const [badge, setBadge] = useState('')
+    const context = useContext(PayContext)
 
-    _handleKey = async e => {
+    useEffect(
+        () => {
+            document.addEventListener("keypress", _handleKey)
+            clearTimer()
+            return () => {
+                document.removeEventListener("keypress", _handleKey)
+            }
+        },
+        [badge]
+    )
+
+    const _handleKey = async e => {
         switch (e.keyCode) {
             case 13:
-                await this.context.login(this.state.badge)
-                this.setState({ badge: '' })
-                this.clearMessage()
+                await context.login(badge)
+                setBadge('')
+                clearMessage()
                 break;
             default:
-                var badge = this.state.badge
-                badge += e.key
-                this.setState({ badge })
-                this.setTimer()
+                var updatedBadge = badge
+                updatedBadge += e.key
+                setBadge(updatedBadge)
+                setTimer()
                 break;
         }
     }
 
-    setTimer = () => {
-        if (this.timerHandle) {
-            return;
+    var timerHandle = null
+    const setTimer = () => {
+        if (timerHandle) {
+            return
         }
-        this.timerHandle = setTimeout(() => {
-            this.setState({ badge: '' });
+        timerHandle = setTimeout(() => {
+            setBadge('')
         }, (500));
     }
 
-    clearTimer = () => {
-        if (this.timerHandle) {
-            clearTimeout(this.timerHandle);
-            this.timerHandle = 0;
+    const clearTimer = () => {
+        if (timerHandle) {
+            clearTimeout(timerHandle);
+            timerHandle = 0;
         }
     }
 
-    clearMessage = () => {
-        this.messageTimer = setTimeout(() => {
-            this.context.clearError()
+    const clearMessage = () => {
+        setTimeout(() => {
+            context.clearError()
         }, (2500));
     }
 
-    componentDidMount() {
-        document.addEventListener("keypress", this._handleKey)
+    let redirectToShop = null
+    if (context.state.isAuthenticated) {
+        redirectToShop = <Redirect to="/shop" />
     }
 
-    componentDidUpdate() {
-        this.clearTimer()
+    let loading = null
+    if (context.state.err === null & !context.state.isLoading) {
+        loading = (
+            <div class="sk-folding-cube">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+            </div>
+        )
+    } else if (context.state.err === null & context.state.isLoading) {
+        loading = <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+    } else if (context.state.err != null) {
+        loading = <Alert variant="warning" className="error">{context.state.err.message}</Alert>
     }
 
-    componentWillUnmount() {
-        document.removeEventListener("keypress", this._handleKey)
-    }
-
-    handleChange = e => {
-        this.setState({ badge: e.target.value })
-    }
-
-    handleErase = e => {
-        this.setState({ badge: '' })
-    }
-
-    render() {
-        let redirectToShop = null
-        if (this.context.state.isAuthenticated) {
-            redirectToShop = <Redirect to="/shop" />
-        }
-
-        let loading = null
-        if (this.context.state.err === null & !this.context.state.isLoading) {
-            loading = (
-                <div class="sk-folding-cube">
-                    <div class="sk-cube1 sk-cube"></div>
-                    <div class="sk-cube2 sk-cube"></div>
-                    <div class="sk-cube4 sk-cube"></div>
-                    <div class="sk-cube3 sk-cube"></div>
-                </div>
-            )
-        } else if (this.context.state.err === null & this.context.state.isLoading) {
-            loading = <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-        } else if (this.context.state.err != null) {
-            loading = <Alert variant="warning" className="error">{this.context.state.err.message}</Alert>
-        }
-
-        return (
-            <div className='container-fluid background pt-5'>
-                {redirectToShop}
-                <div className="row login">
-                    <div className="col align-self-center">
-                        <div className="row">
-                            <div className="col-md-12 text-center title">
-                                <h1>Veuillez passer votre badge...</h1>
-                            </div>
+    return (
+        <div className='container-fluid background pt-5'>
+            {redirectToShop}
+            <div className="row login">
+                <div className="col align-self-center">
+                    <div className="row">
+                        <div className="col-md-12 text-center title">
+                            <h1>Veuillez passer votre badge...</h1>
                         </div>
-                        <div className="row">
-                            <div className="col-md-12 text-center loading">
-                                {loading}
-                            </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-12 text-center loading">
+                            {loading}
                         </div>
                     </div>
                 </div>
-            </div >
-        )
-    }
+            </div>
+        </div >
+    )
 }
-
-Login.contextType = PayContext
 
 export default Login
