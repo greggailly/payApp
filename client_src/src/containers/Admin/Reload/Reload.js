@@ -1,66 +1,75 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import api from './../../../utils/axios';
 import { Button } from 'react-bootstrap'
 
-class Reload extends Component {
-    state = {
-        badge: '',
-        value: 0,
-        accounts: []
-    }
+const Reload = () => {
+    const [badge, setBadge] = useState('')
+    const [value, setValue] = useState(0)
+    const [accounts, setAccounts] = useState([])
 
-    async componentDidMount() {
+    useEffect(
+        () => {
+            getAccounts()
+        }, []
+    )
+
+    const getAccounts = async () => {
         const token = localStorage.getItem('payToken')
         const res = await api('get', '/accounts', null, token)
-        this.setState({ accounts: res.data.accounts })
+        setAccounts(res.data.accounts)
     }
 
-    handleChangeBadge = e => {
-        this.setState({ badge: e.target.value })
+    const handleChange = e => {
+        console.log(e.target.name)
+        switch (e.target.name) {
+            case 'badge':
+                setBadge(e.target.value)
+                break
+            case 'value':
+                setValue(e.target.value)
+                break
+            default:
+                break
+        }
     }
 
-    handleChangeValue = e => {
-        this.setState({ value: e.target.value })
-    }
-
-    handleSubmit = async e => {
+    const handleSubmit = async e => {
         const user = {
-            badge: this.state.badge,
-            solde: this.state.value
+            badge,
+            solde: value
         }
         const token = localStorage.getItem('payToken')
         try {
             await api('post', 'users', user, token)
-            var caisseAccount = this.state.accounts.find(account => account.name === 'Caisse')
-            var value = parseFloat(caisseAccount.value)
-            value = value + parseFloat(this.state.value)
-            caisseAccount.value = value
+            var caisseAccount = accounts.find(account => account.name === 'Caisse')
+            var newValue = parseFloat(caisseAccount.value)
+            newValue = newValue + parseFloat(newValue)
+            caisseAccount.value = newValue
             await api('put', `/accounts/${caisseAccount._id}`, caisseAccount, token)
-            this.setState({ badge: '', value: '' })
+            setBadge('')
+            setValue(0)
         } catch (error) {
             throw new Error(error)
         }
     }
 
-    render() {
-        return (
-            <div className="m-5">
-                <div className="row text-center mb-3" >
-                    <div className="col-md-3">Badge</div>
-                    <div className="col-md-3">Montant</div>
-                    <div className="col-md-4"></div>
-                </div>
-                <div className="row text-center mb-3" >
-                    <div className="col-md-3"><input type="password" className="form-control" value={this.state.badge} onChange={this.handleChangeBadge} /></div>
-                    <div className="col-md-3"><input type="number" className="form-control" value={this.state.value} onChange={this.handleChangeValue} /></div>
-                    <div className="col-md-4">
-                        <Button className="mr-2" variant="success" onClick={this.handleSubmit}>Recharger</Button>
-                    </div>
+    return (
+        <div className="m-5">
+            <div className="row text-center mb-3" >
+                <div className="col-md-3">Badge</div>
+                <div className="col-md-3">Montant</div>
+                <div className="col-md-4"></div>
+            </div>
+            <div className="row text-center mb-3" >
+                <div className="col-md-3"><input type="password" className="form-control" name="badge" value={badge} onChange={handleChange} /></div>
+                <div className="col-md-3"><input type="number" className="form-control" name="value" value={value} onChange={handleChange} /></div>
+                <div className="col-md-4">
+                    <Button className="mr-2" variant="success" onClick={handleSubmit}>Recharger</Button>
                 </div>
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 
