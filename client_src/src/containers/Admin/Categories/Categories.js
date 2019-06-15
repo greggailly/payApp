@@ -1,44 +1,42 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
-import api from './../../../utils/axios'
+import { PayContext } from './../../../utils/PayProvider'
 
-class Categories extends Component {
-    state = {
-        categories: []
-    }
+const Categories = () => {
+    const [categories, setCategories] = useState([])
+    const context = useContext(PayContext)
 
-    async componentDidMount() {
-        const token = localStorage.getItem('payToken')
-        const res = await api('get', '/categories', null, token)
-        this.setState({ categories: res.data.categories })
-    }
+    useEffect(
+        () => {
+            context.getCategories()
+            setCategories(context.state.categories)
+        }
+        , [])
 
-    render() {
-        const categories = this.state.categories.map((category, i) => {
-            return (
-                <tr key={i}>
-                    <td>{category.name}</td>
-                    <td></td>
-                </tr>
-            )
-        })
+    const categoriesRender = categories.map((category, i) => {
         return (
-            <div className="container mt-3">
-                <div className="text-center"><h2>Liste des catégories</h2></div>
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {categories}
-                    </tbody>
-                </table>
-            </div>
+            <tr key={i}>
+                <td>{category.name}</td>
+                <td></td>
+            </tr>
         )
-    }
+    })
+    return (
+        <div className="container mt-3">
+            <div className="text-center"><h2>Liste des catégories</h2></div>
+            <table className="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {categoriesRender}
+                </tbody>
+            </table>
+        </div>
+    )
 }
 
 export default Categories

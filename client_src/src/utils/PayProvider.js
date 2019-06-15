@@ -29,7 +29,6 @@ export const PayProvider = (props) => {
         const token = localStorage.getItem('payToken')
         try {
             const res = await api('get', '/categories', null, token)
-            console.log(res.data.categories)
             setCategories(res.data.categories)
         } catch (error) {
             throw new Error(error)

@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 
-const categoriesController = require('../controllers/categoriesController')
+const categoriesController = require('../Controllers/categoriesController')
 
 router.get('/', categoriesController.readAll)
 router.post('/', categoriesController.create)

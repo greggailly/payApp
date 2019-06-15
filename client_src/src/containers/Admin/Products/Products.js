@@ -1,207 +1,162 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import api from './../../../utils/axios'
 import { PayContext } from './../../../utils/PayProvider'
 import { Button } from 'react-bootstrap'
 
-class Products extends Component {
-    state = {
-        products: [],
+const Products = () => {
+    const [products, setProducts] = useState([])
+    const [newProduct, setNewProduct] = useState({
         name: '',
         price: '',
         img: '',
         starred: false,
-        hasChanged: false,
-        selectedOption: '',
-        categories: []
+        category: {},
+        hasChanged: false
+    })
+
+    const context = useContext(PayContext)
+
+    useEffect(
+        () => {
+            context.getProducts()
+            setProducts(context.state.products)
+            context.getCategories()
+        }, []
+    )
+
+    const handleChange = e => {
+        let updatedProducts = [...products]
+        if (e.target.name === 'starred') {
+            updatedProducts[e.target.id][e.target.name] = e.target.checked
+        } else if (e.target.name === 'category') {
+            const category = context.state.categories.find(category => category._id === e.target.value)
+            updatedProducts[e.target.id][e.target.name] = category
+        }
+        else {
+            updatedProducts[e.target.id][e.target.name] = e.target.value
+        }
+        updatedProducts[e.target.id].hasChanged = true
+        setProducts(updatedProducts)
     }
 
-    async componentDidMount() {
-        const token = localStorage.getItem('payToken')
-        var res = await api('get', '/products', null, token)
-        var products = res.data.products.map(product => {
-            return (
-                { ...product, hasChanged: false }
-            )
-        })
-        this.setState({ products })
-        res = await api('get', '/categories', null, token)
-        this.setState({ categories: res.data.categories })
-    }
-
-    handleChangeName = e => {
-        const id = e.target.id
-        var products = this.state.products
-        products[id].name = e.target.value
-        products[id].hasChanged = true
-        this.setState({ products })
-    }
-
-    handleChangePrice = e => {
-        const id = e.target.id
-        var products = this.state.products
-        products[id].price = e.target.value
-        products[id].hasChanged = true
-        this.setState({ products })
-    }
-
-    handleChangeImg = e => {
-        const id = e.target.id
-        var products = this.state.products
-        products[id].img = e.target.value
-        products[id].hasChanged = true
-        this.setState({ products })
-    }
-
-    handleChangeStarred = e => {
-        const id = e.target.id
-        var products = this.state.products
-        products[id].starred = e.target.checked
-        products[id].hasChanged = true
-        this.setState({ products })
-    }
-
-    handleChangeCategory = e => {
-        const id = e.target.id
-        var products = this.state.products
-        const category = this.state.categories.find(category => category._id === e.target.value)
-        products[id].category = category
-        products[id].hasChanged = true
-        this.setState({ products })
-    }
-
-    handleSubmit = async e => {
+    const handleSubmit = async e => {
         const id = e.currentTarget.id
-        const productId = this.state.products[id]._id
+        const productId = products[id]._id
         const token = localStorage.getItem('payToken')
         try {
-            await api('put', `/products/${productId}`, this.state.products[id], token)
-            var products = this.state.products
-            products[id].hasChanged = false
-            this.setState({ products })
+            await api('put', `/products/${productId}`, products[id], token)
+            var newProducts = [...products]
+            newProducts[id].hasChanged = false
+            setProducts(newProducts)
         } catch (error) {
             throw new Error(error)
         }
     }
 
-    handleNewName = e => {
-        this.setState({ name: e.target.value, hasChanged: true })
-    }
-
-    handleNewPrice = e => {
-        this.setState({ price: e.target.value, hasChanged: true })
-    }
-
-    handleNewImg = e => {
-        this.setState({ img: e.target.value, hasChanged: true })
-    }
-
-    handleNewCategory = e => {
-        this.setState({ selectedOption: e.target.value, hasChanged: true })
-    }
-
-    handleNewStarred = e => {
-        this.setState({ starred: e.target.checked })
-    }
-
-    handleNew = async e => {
-        const product = {
-            name: this.state.name,
-            price: this.state.price,
-            img: this.state.img,
-            starred: this.state.starred,
-            category: this.state.selectedOption
+    const handleChangeNew = e => {
+        let product = { ...newProduct }
+        if (e.target.name === 'starred') {
+            product.starred = e.target.checked
+        } else if (e.target.name === 'category') {
+            const category = context.state.categories.find(category => category._id === e.target.value)
+            product.category = category
         }
+        else {
+            product[e.target.name] = e.target.value
+        }
+        product.hasChanged = true
+        setNewProduct(product)
+    }
+
+    const handleNew = async e => {
         const token = localStorage.getItem('payToken')
         try {
-            const res = await api('post', '/products', product, token)
-            this.setState({
+            const res = await api('post', '/products', newProduct, token)
+            let product = {
                 name: '',
                 price: '',
                 img: '',
                 starred: false,
-                selectedOption: '',
-                hasChanged: false,
-                products: this.state.products.concat(res.data.createdProduct)
-            })
+                category: {},
+                hasChanged: false
+            }
+            let updatedProducts = [...products].concat(res.data.createdProduct)
+            setProducts(updatedProducts)
+            setNewProduct(product)
         } catch (error) {
             throw new Error(error)
         }
     }
 
-    handleDelete = async e => {
+    const handleDelete = async e => {
         const id = e.currentTarget.id
-        const productId = this.state.products[id]._id
+        const productId = products[id]._id
         const token = localStorage.getItem('payToken')
         try {
             await api('delete', `/products/${productId}`, null, token)
-            var products = this.state.products
-            products.splice(id, 1)
-            this.setState({ products })
+            var updatedProducts = [...products]
+            updatedProducts.splice(id, 1)
+            setProducts(updatedProducts)
         } catch (error) {
             throw new Error(error)
         }
     }
 
-
-    render() {
-        const options = this.state.categories.map((category, i) => {
-            return (
-                <option key={i} value={category._id}>{category.name}</option>
-            )
-        })
-
-        const productsList = this.state.products.map((product, i) => {
-            return (
-                <div key={i} className="row text-center mb-3" >
-                    <div className="col-md-2"><input className="form-control" id={i} value={product.name} onChange={this.handleChangeName} /></div>
-                    <div className="col-md-2"><input type="number" className="form-control" id={i} value={product.price} onChange={this.handleChangePrice} /></div>
-                    <div className="col-md-2"><input className="form-control" id={i} value={product.img} onChange={this.handleChangeImg} /></div>
-                    <div className="col-md-3">
-                        <select id={i} value={product.category._id} onChange={this.handleChangeCategory} className="form-control">
-                            {options}
-                        </select>
-                    </div>
-                    <div className="col-md-1"><input id={i} className="form-control" type="checkbox" checked={product.starred} onChange={this.handleChangeStarred} /></div>
-                    <div className="col-md-2">
-                        <Button className="mr-2" variant="success" id={i} onClick={this.handleSubmit} disabled={!product.hasChanged ? true : false}><i className="fas fa-check"></i></Button>
-                        <Button variant="danger" id={i} onClick={this.handleDelete}><i className="fas fa-trash-alt"></i></Button>
-                    </div>
-                </div>
-            )
-        })
-
+    const options = context.state.categories.map((category, i) => {
         return (
-            <div className="m-5">
-                <div className="row text-center mb-3" >
-                    <div className="col-md-2">Nom</div>
-                    <div className="col-md-2">Prix</div>
-                    <div className="col-md-2">Image</div>
-                    <div className="col-md-3">Catégorie</div>
-                    <div className="col-md-1">Starred</div>
-                    <div className="col-md-2"></div>
+            <option key={i} value={category._id}>{category.name}</option>
+        )
+    })
+
+    const productsList = products.map((product, i) => {
+        return (
+            <div key={i} className="row text-center mb-3" >
+                <div className="col-md-2"><input className="form-control" id={i} name="name" value={product.name} onChange={handleChange} /></div>
+                <div className="col-md-2"><input type="number" className="form-control" id={i} name="price" value={product.price} onChange={handleChange} /></div>
+                <div className="col-md-2"><input className="form-control" id={i} name="img" value={product.img} onChange={handleChange} /></div>
+                <div className="col-md-3">
+                    <select id={i} name="category" value={product.category._id} onChange={handleChange} className="form-control">
+                        {options}
+                    </select>
                 </div>
-                {productsList}
-                <div className="row text-center mb-3" >
-                    <div className="col-md-2"><input className="form-control" value={this.state.name} onChange={this.handleNewName} /></div>
-                    <div className="col-md-2"><input type="number" className="form-control" value={this.state.price} onChange={this.handleNewPrice} /></div>
-                    <div className="col-md-2"><input className="form-control" value={this.state.img} onChange={this.handleNewImg} /></div>
-                    <div className="col-md-3">
-                        <select value={this.state.selectedOption} onChange={this.handleNewCategory} className="form-control" required>
-                            <option value="">Choosir Catégorie</option>
-                            {options}
-                        </select>
-                    </div>
-                    <div className="col-md-1"><input type="checkbox" className="form-control" checked={this.state.starred} onChange={this.handleNewStarred} /></div>
-                    <div className="col-md-2">
-                        <Button className="mr-2" variant="success" onClick={this.handleNew} disabled={!this.state.hasChanged ? true : false}>Créer</Button>
-                    </div>
+                <div className="col-md-1"><input id={i} name="starred" className="form-control" type="checkbox" checked={product.starred} onChange={handleChange} /></div>
+                <div className="col-md-2">
+                    <Button className="mr-2" variant="success" id={i} onClick={handleSubmit} disabled={!product.hasChanged ? true : false}><i className="fas fa-check"></i></Button>
+                    <Button variant="danger" id={i} onClick={handleDelete}><i className="fas fa-trash-alt"></i></Button>
                 </div>
             </div>
         )
-    }
-}
+    })
 
-Products.contextType = PayContext
+    return (
+        <div className="m-5">
+            <div className="row text-center mb-3" >
+                <div className="col-md-2">Nom</div>
+                <div className="col-md-2">Prix</div>
+                <div className="col-md-2">Image</div>
+                <div className="col-md-3">Catégorie</div>
+                <div className="col-md-1">Starred</div>
+                <div className="col-md-2"></div>
+            </div>
+            {productsList}
+            <div className="row text-center mb-3" >
+                <div className="col-md-2"><input className="form-control" value={newProduct.name} name="name" onChange={handleChangeNew} /></div>
+                <div className="col-md-2"><input type="number" className="form-control" value={newProduct.price} name="price" onChange={handleChangeNew} /></div>
+                <div className="col-md-2"><input className="form-control" value={newProduct.img} name="img" onChange={handleChangeNew} /></div>
+                <div className="col-md-3">
+                    <select value={newProduct.category._id} name="category" onChange={handleChangeNew} className="form-control" required>
+                        <option value="">Choosir Catégorie</option>
+                        {options}
+                    </select>
+                </div>
+                <div className="col-md-1"><input type="checkbox" className="form-control" checked={newProduct.starred} name="starred" onChange={handleChangeNew} /></div>
+                <div className="col-md-2">
+                    <Button className="mr-2" variant="success" onClick={handleNew} disabled={!newProduct.hasChanged ? true : false}>Créer</Button>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 export default Products
