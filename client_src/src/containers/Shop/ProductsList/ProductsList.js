@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useContext } from 'react'
 
 import Products from './../../../components/Products/Products'
 import Catbar from './../../../components/Catbar/Catbar'
@@ -6,28 +6,25 @@ import { PayContext } from './../../../utils/PayProvider'
 
 import './ProductsList.css'
 
-class ProductsList extends Component {
-    render() {
-        return (
-            <div className="container-fluid">
-                <div className="row fullHeight">
-                    <div className="col-md catbar">
-                        <Catbar categories={this.context.state.categories} />
-                    </div>
-                    <div className="col-md-10">
-                        <Products
-                            products={this.context.state.products}
-                            clickProduct={this.context.clickProduct}
-                            solde={this.context.state.user.solde}
-                            search={this.props.location.search.split('=')[1]}
-                        />
-                    </div>
+const ProductsList = (props) => {
+    const context = useContext(PayContext)
+    return (
+        <div className="container-fluid">
+            <div className="row fullHeight">
+                <div className="col-md catbar">
+                    <Catbar categories={context.state.categories} />
+                </div>
+                <div className="col-md-10">
+                    <Products
+                        products={context.state.products}
+                        clickProduct={context.clickProduct}
+                        solde={context.state.user.solde}
+                        search={props.location.search.split('=')[1]}
+                    />
                 </div>
             </div>
-        )
-    }
+        </div>
+    )
 }
-
-ProductsList.contextType = PayContext
 
 export default ProductsList

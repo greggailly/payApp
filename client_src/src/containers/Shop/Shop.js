@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { PayContext } from './../../utils/PayProvider'
 
@@ -12,66 +12,59 @@ import Categories from './../Admin/Categories/Categories'
 import Accounts from './../Admin/Accounts/Accounts'
 import Orders from './../Admin/Orders/Orders'
 
-
 import './Shop.css'
 
+const Shop = (props) => {
+    const context = useContext(PayContext)
 
+    useEffect(
+        () => {
+            context.checkLogin()
+            context.getProducts()
+            context.getCategories()
+        }, []
+    )
 
-class Shop extends Component {
-    state = {
-        redirect: false
-    }
+    var adminBar = (
+        <div className="row">
+            <div className="col-md-12 no-padding">
+                <Admin />
+            </div>
+        </div>
+    )
 
-    componentDidMount() {
-        this.context.checkLogin()
-        this.context.getProducts()
-        this.context.getCategories()
-    }
+    var admin = (
+        <Switch>
+            <Route path={props.match.path + '/reload'} component={Reload} />
+            <Route path={props.match.path + '/users'} component={Users} />
+            <Route path={props.match.path + '/products'} component={Products} />
+            <Route path={props.match.path + '/categories'} component={Categories} />
+            <Route path={props.match.path + '/accounts'} component={Accounts} />
+            <Route path={props.match.path + '/orders'} component={Orders} />
+            <Route exact path="/shop" component={ProductsList} />
+        </Switch>
+    )
 
-    render() {
-        var adminBar = (
+    var user = (
+        <Switch>
+            <Route exact path="/shop" component={ProductsList} />
+        </Switch>
+    )
+
+    return (
+        <div className="container-fluid background ">
             <div className="row">
-                <div className="col-md-12 no-padding">
-                    <Admin />
+                <div className="col-md-9 no-padding">
+                    {context.state.user.isAdmin ? adminBar : null}
+                    {context.state.user.isAdmin ? admin : user}
+
+                </div>
+                <div className="col-md-3  no-padding">
+                    <Sidebar />
                 </div>
             </div>
-        )
-
-        var admin = (
-            <Switch>
-                <Route path={this.props.match.path + '/reload'} component={Reload} />
-                <Route path={this.props.match.path + '/users'} component={Users} />
-                <Route path={this.props.match.path + '/products'} component={Products} />
-                <Route path={this.props.match.path + '/categories'} component={Categories} />
-                <Route path={this.props.match.path + '/accounts'} component={Accounts} />
-                <Route path={this.props.match.path + '/orders'} component={Orders} />
-                <Route exact path="/shop" component={ProductsList} />
-            </Switch>
-        )
-
-        var user = (
-            <Switch>
-                <Route exact path="/shop" component={ProductsList} />
-            </Switch>
-        )
-
-        return (
-            <div className="container-fluid background ">
-                <div className="row">
-                    <div className="col-md-9 no-padding">
-                        {this.context.state.user.isAdmin ? adminBar : null}
-                        {this.context.state.user.isAdmin ? admin : user}
-
-                    </div>
-                    <div className="col-md-3  no-padding">
-                        <Sidebar />
-                    </div>
-                </div>
-            </div>
-        )
-    }
+        </div>
+    )
 }
-
-Shop.contextType = PayContext
 
 export default Shop
