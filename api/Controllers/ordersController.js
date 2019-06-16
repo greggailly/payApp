@@ -16,6 +16,7 @@ exports.order_post = async (req, res, next) => {
         });
         const order = new Order({
             _id: new mongoose.Types.ObjectId,
+            datetime: new Date(),
             list: list,
             price: totalPrice.toFixed(2),
             userId: userId

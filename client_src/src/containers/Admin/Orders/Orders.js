@@ -1,46 +1,63 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import api from '../../../utils/axios'
+import ReactTable from 'react-table'
+import Suborders from './Suborders'
 
-import './Orders.css'
+import 'react-table/react-table.css'
 
-class Orders extends Component {
-    state = {
-        orders: [],
-    }
 
-    async componentDidMount() {
+const Orders = () => {
+    const [orders, setOrders] = useState([])
+
+    useEffect(
+        () => {
+            getOrders()
+        }, []
+    )
+
+    const getOrders = async () => {
         const token = localStorage.getItem('payToken')
         const res = await api('get', '/orders', null, token)
-        this.setState({ orders: res.data.orders })
+        setOrders(res.data.orders)
     }
 
-    render() {
-        const orders = this.state.orders.map((order, i) => {
-            return (
-                <tr className="text-center" key={i}>
-                    <td>{order.userId.username}</td>
-                    <td>{order.price}</td>
-                </tr>
-            )
-        })
 
-        return (
-            <div className="container mt-3 text-center" >
-                <h2>Liste des commandes</h2>
-                <table className="table table-striped mt-3">
-                    <thead>
-                        <tr className="text-center">
-                            <th>Utilisateur</th>
-                            <th>Prix</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {orders}
-                    </tbody>
-                </table>
-            </div >
-        )
-    }
+
+    const columns = [
+        {
+            id: 'datetime',
+            Header: 'Date & Time',
+            accessor: d => d.datetime
+        },
+        {
+            id: 'username',
+            Header: 'Username',
+            accessor: d => d.userId.username
+        },
+        {
+            Header: 'Price',
+            accessor: 'price'
+        }
+    ]
+
+    return (
+        <div className="container mt-3 text-center" >
+            <h2>Liste des commandes</h2>
+            <ReactTable
+                data={orders}
+                columns={columns}
+                showPageSizeOptions={false}
+                defaultPageSize={15}
+                SubComponent={row => {
+                    return (
+                        <Suborders
+                            list={row.original.list}
+                        />
+                    )
+                }}
+            />
+        </div >
+    )
 }
 
 export default Orders
