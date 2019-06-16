@@ -5,9 +5,9 @@ exports.create = async (req, res, next) => {
     const category = new Category()
     category.name = req.body.name
     try {
-        const result = category.save()
+        const createdCategory = await category.save()
         res.status(200).json({
-            createdCategory: result
+            createdCategory
         })
     } catch (error) {
         throw new Error(error)

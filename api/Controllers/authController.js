@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 
 exports.signup = async (req, res, next) => {
-    user = new User({
+    const user = new User({
         _id: new mongoose.Types.ObjectId(),
         username: req.body.username,
         badge: req.body.badge,
@@ -11,10 +11,10 @@ exports.signup = async (req, res, next) => {
         isAdmin: req.body.isAdmin
     })
     try {
-        const user = await user.save()
+        const createdUser = await user.save()
         res.status(201).json({
             message: "User created",
-            createdUser: user
+            createdUser
         })
     } catch (error) {
         throw new Error(error)
