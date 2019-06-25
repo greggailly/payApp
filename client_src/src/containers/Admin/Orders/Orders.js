@@ -21,8 +21,6 @@ const Orders = () => {
         setOrders(res.data.orders)
     }
 
-
-
     const columns = [
         {
             id: 'datetime',
