@@ -26,8 +26,9 @@ exports.readAll = async (req, res, next) => {
 }
 
 exports.read = async (req, res, next) => {
+    const id = req.params.id
     try {
-        const result = Category.findById()
+        const result = Category.findById(id)
         res.status(200).json({
             category: result
         })
@@ -37,8 +38,9 @@ exports.read = async (req, res, next) => {
 }
 
 exports.update = async (req, res, next) => {
+    const id = req.params.id
     try {
-        const category = await Category.findById()
+        const category = await Category.findById(id)
         category.name = req.body.name
         const result = await category.save()
         res.status(200).json({

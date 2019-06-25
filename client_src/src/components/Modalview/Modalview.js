@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 
+import './ModalView.css'
+
 import Accounts from '../../containers/Admin/Forms/Accounts'
+import Categories from '../../containers/Admin/Forms/Categories'
 
 const ModalView = (props) => {
     const [show, setShow] = useState(false)
@@ -19,6 +22,9 @@ const ModalView = (props) => {
             case 'accounts':
                 return <Accounts handleClose={handleClose} handleSuccess={props.handleSuccess} />
                 break;
+            case 'categories':
+                return <Categories handleClose={handleClose} handleSuccess={props.handleSuccess} />
+                break;
             default:
                 return 'Error in creating form'
                 break;
@@ -27,10 +33,12 @@ const ModalView = (props) => {
 
     return (
         <React.Fragment>
-            <Button onClick={handleShow}>Nouveau {props.name}</Button>
-            <Modal show={show} onHide={handleClose}>
-                {form()}
-            </Modal>
+            <div className="modalView">
+                <Button onClick={handleShow}>Nouve(au/elle) {props.name}</Button>
+                <Modal show={show} onHide={handleClose}>
+                    {form()}
+                </Modal>
+            </div>
         </React.Fragment>
     )
 }

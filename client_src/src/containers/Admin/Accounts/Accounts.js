@@ -60,21 +60,15 @@ const Accounts = () => {
         }
     ]
 
-    const handleChangeValue = (e, cellInfo) => {
+    const handleChangeValue = async (e, cellInfo) => {
         e.preventDefault()
         const id = cellInfo.row._original._id
-        let updatedAccounts = accounts
+        let updatedAccounts = [...accounts]
         updatedAccounts[cellInfo.index][cellInfo.column.id] = e.target.innerHTML
-        updatedAccounts[cellInfo.index].hasChanged = true
-        setAccounts(updatedAccounts)
-    }
-
-    const handleSubmit = async e => {
-        const id = e.currentTarget.id
-        const accountId = accounts[id]._id
-        const token = localStorage.getItem('payToken')
         try {
-            await api('put', `/accounts/${accountId}`, accounts[id], token)
+            const token = localStorage.getItem('payToken')
+            await api('put', `/accounts/${id}`, updatedAccounts[cellInfo.index], token)
+            setAccounts(updatedAccounts)
         } catch (error) {
             console.log(error)
         }
@@ -101,12 +95,14 @@ const Accounts = () => {
 
     return (
         <div className="container mt-3 text-center" >
-            <h2>Liste des comptes non-utilisateurs</h2>
-            <Modalview
-                name='compte'
-                entity='accounts'
-                handleSuccess={handleSuccess}
-            />
+            <div className="row">
+                <div className="col-8"><h2>Liste des comptes non-utilisateurs</h2></div>
+                <div className="col-4"><Modalview
+                    name='compte'
+                    entity='accounts'
+                    handleSuccess={handleSuccess}
+                /></div>
+            </div>
             <ReactTable
                 data={accounts}
                 columns={columns}
