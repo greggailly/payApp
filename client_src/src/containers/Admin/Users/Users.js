@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import api from './../../../utils/axios'
+import ReactTable from 'react-table'
 
 import './Users.css'
 
@@ -9,7 +10,6 @@ const Users = () => {
     const [newUser, setNewUser] = useState({
         name: '',
         badge: '',
-        hasChanged: false,
         isAdmin: false
     })
 
@@ -19,24 +19,64 @@ const Users = () => {
         }, []
     )
 
+    const renderEditable = (cellInfo) => {
+        const data = users
+        return (
+            <div
+                style={{ backgroundColor: "#fafafa" }}
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={e => {
+                    handleChange(e, cellInfo)
+                }}
+                dangerouslySetInnerHTML={{
+                    __html: data[cellInfo.index][cellInfo.column.id]
+                }}
+            />
+        );
+    }
+
+    const columns = [
+        {
+            Header: 'Nom',
+            accessor: 'username',
+            Cell: renderEditable
+        },
+        {
+            Header: 'Badge',
+            accessor: 'badge',
+            Cell: renderEditable
+        },
+        {
+            Header: 'Administrateur',
+            accessor: 'isAdmin',
+            Cell: renderEditable
+        }
+    ]
+
     const getUsers = async () => {
         const token = localStorage.getItem('payToken')
         const res = await api('get', '/users', null, token)
-        const userArray = res.data.users.map(user => {
-            return { ...user, hasChanged: false }
-        })
-        setUsers(userArray)
+        setUsers(res.data.users)
     }
 
-    const handleChange = e => {
+    const handleChange = async (e, cellInfo) => {
+        e.preventDefault()
+        const id = cellInfo.row._original._id
         var updatedUsers = [...users]
-        if (e.target.name === 'isAdmin') {
-            updatedUsers[e.target.id][e.target.name] = e.target.checked
+        if (cellInfo.column.id === 'isAdmin') {
+            console.log(cellInfo.column)
+            updatedUsers[cellInfo.index][cellInfo.column.id] = e.target.innerHTML
         } else {
-            updatedUsers[e.target.id][e.target.name] = e.target.value
+            updatedUsers[cellInfo.index][cellInfo.column.id] = e.target.innerHTML
         }
-        updatedUsers[e.target.id].hasChanged = true
-        setUsers(updatedUsers)
+        try {
+            const token = localStorage.getItem('payToken')
+            await api('put', `/users/${id}`, updatedUsers[cellInfo.index], token)
+            setUsers(updatedUsers)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const handleSubmit = async e => {
@@ -95,38 +135,27 @@ const Users = () => {
         }
     }
 
-    var userList = users.map((user, i) => {
-        return (
 
-            <div className="row text-center mb-3" key={i}>
-                <div className="col-md-3"><input className="form-control" id={i} value={user.username} onChange={handleChange} /></div>
-                <div className="col-md-3"><input className="form-control" id={i} value={user.badge} onChange={handleChange} /></div>
-                <div className="col-md-2"><Form.Check id={i} checked={user.isAdmin} onChange={handleChange} /></div>
-                <div className="col-md-4">
-                    <Button className="mr-2" variant="success" id={i} onClick={handleSubmit} disabled={!user.hasChanged ? true : false}><i className="fas fa-check"></i></Button>
-                    <Button variant="danger" id={i} onClick={handleDelete}><i className="fas fa-trash-alt"></i></Button>
-                </div>
-            </div>
-        )
-    })
 
     return (
-        <div className="m-5">
-            <div className="row text-center mb-3" >
-                <div className="col-md-3">Nom</div>
-                <div className="col-md-3">Badge</div>
-                <div className="col-md-2">Administrateur</div>
-                <div className="col-md-4"></div>
+        <div className="container mt-3 text-center">
+            <div className="row">
+                <div className="col-8"><h2>Liste des utilisateurs</h2></div>
+                {/* <div className="col-4">
+                    <Modalview
+                        name='catégorie'
+                        entity='categories'
+                        handleSuccess={handleSuccess}
+                    />
+                </div> */}
             </div>
-            {userList}
-            <div className="row text-center mb-3" >
-                <div className="col-md-3"><input className="form-control" value={newUser.name} onChange={handleChangeNew} /></div>
-                <div className="col-md-3"><input className="form-control" value={newUser.badge} onChange={handleChangeNew} /></div>
-                <div className="col-md-2"><Form.Check value={newUser.isAdmin} onChange={handleChangeNew} /></div>
-                <div className="col-md-4">
-                    <Button className="mr-2" variant="success" onClick={handleNew} disabled={!newUser.hasChanged ? true : false}>Créer</Button>
-                </div>
-            </div>
+            <ReactTable
+                data={users}
+                columns={columns}
+                showPageSizeOptions={false}
+                defaultPageSize={12}
+                filterable
+            />
         </div>
     )
 }

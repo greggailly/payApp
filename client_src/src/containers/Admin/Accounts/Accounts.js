@@ -3,7 +3,6 @@ import api from '../../../utils/axios'
 import ReactTable from 'react-table'
 
 import Modalview from '../../../components/Modalview/Modalview'
-import { Button } from 'react-bootstrap'
 
 const Accounts = () => {
     const [accounts, setAccounts] = useState([])
@@ -56,7 +55,8 @@ const Accounts = () => {
         {
             Header: 'Actions',
             Cell: renderActions,
-            maxWidth: 100
+            maxWidth: 100,
+            filterable: false
         }
     ]
 
@@ -107,7 +107,8 @@ const Accounts = () => {
                 data={accounts}
                 columns={columns}
                 showPageSizeOptions={false}
-                defaultPageSize={15}
+                defaultPageSize={12}
+                filterable
             />
         </div >
     )

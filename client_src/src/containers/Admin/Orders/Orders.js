@@ -45,7 +45,8 @@ const Orders = () => {
                 data={orders}
                 columns={columns}
                 showPageSizeOptions={false}
-                defaultPageSize={15}
+                defaultPageSize={12}
+                filterable
                 SubComponent={row => {
                     return (
                         <Suborders

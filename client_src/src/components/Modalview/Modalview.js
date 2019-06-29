@@ -34,8 +34,8 @@ const ModalView = (props) => {
     return (
         <React.Fragment>
             <div className="modalView">
-                <Button onClick={handleShow}>Nouve(au/elle) {props.name}</Button>
-                <Modal show={show} onHide={handleClose}>
+                <Button onClick={handleShow}>Nouv(eau/elle) {props.name}</Button>
+                <Modal show={show} onHide={handleClose} centered>
                     {form()}
                 </Modal>
             </div>

@@ -44,7 +44,7 @@ const Reload = () => {
             await api('post', 'users', user, token)
             var caisseAccount = accounts.find(account => account.name === 'Caisse')
             var newValue = parseFloat(caisseAccount.value)
-            newValue = newValue + parseFloat(newValue)
+            newValue = newValue + parseFloat(value)
             caisseAccount.value = newValue
             await api('put', `/accounts/${caisseAccount._id}`, caisseAccount, token)
             setBadge('')

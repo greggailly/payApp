@@ -80,9 +80,10 @@ const Categories = () => {
             Cell: renderEditable
         },
         {
-            header: 'Action',
+            Header: 'Action',
             Cell: renderActions,
-            maxWidth: 100
+            maxWidth: 100,
+            filterable: false
         }
     ]
 
@@ -95,13 +96,15 @@ const Categories = () => {
                         name='catégorie'
                         entity='categories'
                         handleSuccess={handleSuccess}
-                    /></div>
+                    />
+                </div>
             </div>
             <ReactTable
                 data={categories}
                 columns={columns}
                 showPageSizeOptions={false}
-                defaultPageSize={15}
+                defaultPageSize={12}
+                filterable
             />
         </div>
     )
