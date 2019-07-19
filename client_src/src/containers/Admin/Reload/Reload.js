@@ -55,17 +55,20 @@ const Reload = () => {
     }
 
     return (
-        <div className="m-5">
-            <div className="row text-center mb-3" >
-                <div className="col-md-3">Badge</div>
-                <div className="col-md-3">Montant</div>
-                <div className="col-md-4"></div>
-            </div>
-            <div className="row text-center mb-3" >
-                <div className="col-md-3"><input type="password" className="form-control" name="badge" value={badge} onChange={handleChange} /></div>
-                <div className="col-md-3"><input type="number" className="form-control" name="value" value={value} onChange={handleChange} /></div>
-                <div className="col-md-4">
-                    <Button className="mr-2" variant="success" onClick={handleSubmit}>Recharger</Button>
+        <div className="container mt-3 d-flex flex-row flex-wrap justify-content-center">
+            <h2>Recharger un badge</h2>
+            <div className="col-12">
+                <div className="row mb-3" >
+                    <div className="col">Badge</div>
+                    <div className="col">Montant</div>
+                    <div className="col"></div>
+                </div>
+                <div className="row mb-3" >
+                    <div className="col"><input type="password" className="form-control" name="badge" value={badge} onChange={handleChange} /></div>
+                    <div className="col"><input type="number" className="form-control" name="value" value={value} onChange={handleChange} /></div>
+                    <div className="col">
+                        <Button className="mr-2" variant="success" onClick={handleSubmit}>Recharger</Button>
+                    </div>
                 </div>
             </div>
         </div>

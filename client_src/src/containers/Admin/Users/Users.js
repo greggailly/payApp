@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Form } from 'react-bootstrap'
 import api from './../../../utils/axios'
 import ReactTable from 'react-table'
+import Modalview from '../../../components/Modalview/Modalview'
 
 import './Users.css'
 
 const Users = () => {
     const [users, setUsers] = useState([])
-    const [newUser, setNewUser] = useState({
-        name: '',
-        badge: '',
-        isAdmin: false
-    })
 
     useEffect(
         () => {
@@ -36,6 +31,21 @@ const Users = () => {
         );
     }
 
+    const renderCheckbox = cellInfo => {
+        const data = users
+        return (
+            <input type="checkbox" checked={data[cellInfo.index][cellInfo.column.id]} onChange={e => {
+                handleChange(e, cellInfo)
+            }} />
+        )
+    }
+
+    const renderActions = (cellInfo) => {
+        return (
+            <i id={cellInfo.index} onClick={handleDelete} className="fas fa-trash-alt"></i>
+        )
+    }
+
     const columns = [
         {
             Header: 'Nom',
@@ -50,7 +60,17 @@ const Users = () => {
         {
             Header: 'Administrateur',
             accessor: 'isAdmin',
-            Cell: renderEditable
+            Cell: renderCheckbox
+        },
+        {
+            Header: 'Solde',
+            accessor: 'solde'
+        },
+        {
+            Header: 'Action',
+            Cell: renderActions,
+            maxWidth: 100,
+            filterable: false
         }
     ]
 
@@ -65,8 +85,8 @@ const Users = () => {
         const id = cellInfo.row._original._id
         var updatedUsers = [...users]
         if (cellInfo.column.id === 'isAdmin') {
-            console.log(cellInfo.column)
-            updatedUsers[cellInfo.index][cellInfo.column.id] = e.target.innerHTML
+            console.log(e.target)
+            updatedUsers[cellInfo.index][cellInfo.column.id] = e.target.checked
         } else {
             updatedUsers[cellInfo.index][cellInfo.column.id] = e.target.innerHTML
         }
@@ -79,19 +99,12 @@ const Users = () => {
         }
     }
 
-    const handleSubmit = async e => {
-        const id = e.currentTarget.id
-        const userId = users[id]._id
-        const token = localStorage.getItem('payToken')
-        try {
-            await api('put', `/users/${userId}`, users[id], token)
-            var updatedUsers = [...users]
-            updatedUsers[id].hasChanged = false
-            setUsers(updatedUsers)
-        } catch (error) {
-            throw new Error(error)
-        }
+    const handleSuccess = (newUser) => {
+        let updatedUsers = [...users, newUser.data.createdUser]
+        setUsers(updatedUsers)
     }
+
+
 
     const handleDelete = async e => {
         const id = e.currentTarget.id
@@ -107,47 +120,17 @@ const Users = () => {
         }
     }
 
-    const handleChangeNew = e => {
-        let user = { ...newUser }
-        if (e.target.name === 'isAdmin') {
-            user.isAdmin = e.target.checked
-        } else {
-            user[e.Target.name] = e.target.value
-        }
-        user.hasChanged = true
-        setNewUser(user)
-    }
-
-    const handleNew = async e => {
-        const userCreated = {
-            username: newUser.name,
-            badge: newUser.badge,
-            isAdmin: newUser.isAdmin
-        }
-        const token = localStorage.getItem('payToken')
-        try {
-            const res = await api('put', 'signup', userCreated, token)
-            let updatedUserList = [...users]
-            updatedUserList.concat(res.data.createdUser)
-            setUsers(updatedUserList)
-        } catch (error) {
-            throw new Error(error)
-        }
-    }
-
-
-
     return (
         <div className="container mt-3 text-center">
             <div className="row">
                 <div className="col-8"><h2>Liste des utilisateurs</h2></div>
-                {/* <div className="col-4">
+                <div className="col-4">
                     <Modalview
-                        name='catégorie'
-                        entity='categories'
+                        name='utilisateur'
+                        entity='users'
                         handleSuccess={handleSuccess}
                     />
-                </div> */}
+                </div>
             </div>
             <ReactTable
                 data={users}
