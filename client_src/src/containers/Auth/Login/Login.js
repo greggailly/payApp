@@ -1,96 +1,73 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom';
 import { PayContext } from '../../../utils/PayProvider'
 import { Alert } from 'react-bootstrap'
 
 import './Login.css'
 
-const Login = () => {
-    const [badge, setBadge] = useState('')
-    const context = useContext(PayContext)
-
-    useEffect(
-        () => {
-            clearTimer()
-        },
-        [badge]
-    )
-
-    const handleKey = async e => {
-        console.log(e.target)
-        var updatedBadge = badge
-        updatedBadge += e.key
-        setBadge(updatedBadge)
-        setTimer()
+class Login extends Component {
+    state = {
+        badge: ''
     }
 
-    var timerHandle = null
-    const setTimer = () => {
-        if (timerHandle) {
-            return
+    handleChange = e => {
+        this.setState({ badge: e.target.value })
+    }
+
+    handleSubmit = e => {
+        e.preventDefault()
+        this.context.login(this.state.badge)
+    }
+
+    handleErase = e => {
+        this.setState({ badge: '' })
+    }
+
+    render() {
+        let redirectToShop = null
+        if (this.context.state.isAuthenticated) {
+            redirectToShop = <Redirect to="/shop" />
         }
-        timerHandle = setTimeout(async () => {
-            clearMessage()
-            setBadge('')
-        }, (3000));
-    }
 
-    const clearTimer = () => {
-        if (timerHandle) {
-            clearTimeout(timerHandle);
-            timerHandle = 0;
+        let error = null
+        if (this.context.state.error != null) {
+            error = <Alert variant="warning">{this.context.state.error.message}</Alert>
         }
-    }
 
-    const clearMessage = () => {
-        setTimeout(() => {
-            context.clearError()
-        }, (2500));
-    }
+        let loading = <button className="btn btn-primary mt-2" onClick={this.handleErase} >Effacer</button>
+        if (this.context.state.isLoading) {
+            loading = <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        }
 
-    let redirectToShop = null
-    if (context.state.isAuthenticated) {
-        redirectToShop = <Redirect to="/shop" />
-    }
-
-    let loading = null
-    if (context.state.err === null & !context.state.isLoading) {
-        loading = (
-            <div className="sk-folding-cube">
-                <div className="sk-cube1 sk-cube"></div>
-                <div className="sk-cube2 sk-cube"></div>
-                <div className="sk-cube4 sk-cube"></div>
-                <div className="sk-cube3 sk-cube"></div>
-            </div>
-        )
-    } else if (context.state.err === null & context.state.isLoading) {
-        loading = <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-    } else if (context.state.err != null) {
-        loading = <Alert variant="warning" className="error">{context.state.err.message}</Alert>
-    }
-
-    return (
-        <div className='container-fluid background pt-5'>
-            {redirectToShop}
-            <div className="row login">
-                <div className="col align-self-center">
-                    <div className="row">
-                        <div className="col-md-12 text-center title">
-                            <h1>Veuillez passer votre badge...</h1>
-                            <form onSubmit={() => { context.login(badge) }}>
-                                <input type="text" value={badge} onChange={handleKey} />
-                            </form>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-12 text-center loading">
-                            {loading}
+        return (
+            <div className='container-fluid background pt-5'>
+                {redirectToShop}
+                <div className='text-center'>
+                    {error}
+                    <div className='card mx-auto'>
+                        <div className='card-header bg-dark text-white'><h2>Connexion</h2></div>
+                        <div className='card-body'>
+                            <div className='col-md-6 offset-md-3'>
+                                <form className='form-group mt-3' onSubmit={this.handleSubmit}>
+                                    <input
+                                        type='password'
+                                        value={this.state.badge}
+                                        onChange={this.handleChange}
+                                        placeholder='Badge'
+                                        className='form-control'
+                                        required
+                                        autoFocus />
+                                </form>
+                                {loading}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div >
-    )
+            </div >
+        )
+    }
 }
+
+Login.contextType = PayContext
 
 export default Login
