@@ -11,29 +11,17 @@ const Login = () => {
 
     useEffect(
         () => {
-            document.addEventListener("keypress", _handleKey)
             clearTimer()
-            return () => {
-                document.removeEventListener("keypress", _handleKey)
-            }
         },
         [badge]
     )
 
-    const _handleKey = async e => {
-        switch (e.keyCode) {
-            case 13:
-                await context.login(badge)
-                setBadge('')
-                clearMessage()
-                break;
-            default:
-                var updatedBadge = badge
-                updatedBadge += e.key
-                setBadge(updatedBadge)
-                setTimer()
-                break;
-        }
+    const handleKey = async e => {
+        console.log(e.target)
+        var updatedBadge = badge
+        updatedBadge += e.key
+        setBadge(updatedBadge)
+        setTimer()
     }
 
     var timerHandle = null
@@ -41,9 +29,10 @@ const Login = () => {
         if (timerHandle) {
             return
         }
-        timerHandle = setTimeout(() => {
+        timerHandle = setTimeout(async () => {
+            clearMessage()
             setBadge('')
-        }, (500));
+        }, (3000));
     }
 
     const clearTimer = () => {
@@ -88,6 +77,9 @@ const Login = () => {
                     <div className="row">
                         <div className="col-md-12 text-center title">
                             <h1>Veuillez passer votre badge...</h1>
+                            <form onSubmit={() => { context.login(badge) }}>
+                                <input type="text" value={badge} onChange={handleKey} />
+                            </form>
                         </div>
                     </div>
                     <div className="row">
