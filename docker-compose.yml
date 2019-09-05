@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  server:
+    build: ./
+    expose: 
+      - 5000
+    ports: 
+      - 5000:5000
+    command: node server.js
+  client:
+    build: ./client_src
+    expose: 
+      - 80
+    ports: 
+      - 80:80
+    links:
+    - server
+    command: serve -p 80 -s .
