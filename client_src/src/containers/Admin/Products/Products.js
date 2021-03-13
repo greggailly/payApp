@@ -111,7 +111,7 @@ const Products = () => {
 
     const productsList = products.map((product, i) => {
         return (
-            <div key={i} className="row text-center mb-3" >
+            <div key={i} className="row text-center mb-3">
                 <div className="col-md-2"><input className="form-control" id={i} name="name" value={product.name} onChange={handleChange} /></div>
                 <div className="col-md-2"><input type="number" className="form-control" id={i} name="price" value={product.price} onChange={handleChange} /></div>
                 <div className="col-md-2"><input className="form-control" id={i} name="img" value={product.img} onChange={handleChange} /></div>
@@ -130,7 +130,7 @@ const Products = () => {
     })
 
     return (
-        <div className="m-5">
+        <div className="m-5 style=" style={{ overflow: 'scroll' }} >
             <div className="row text-center mb-3" >
                 <div className="col-md-2">Nom</div>
                 <div className="col-md-2">Prix</div>
@@ -155,7 +155,7 @@ const Products = () => {
                     <Button className="mr-2" variant="success" onClick={handleNew} disabled={!newProduct.hasChanged ? true : false}>Créer</Button>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

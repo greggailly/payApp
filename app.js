@@ -4,8 +4,8 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://host.docker.internal/payAPI', { useNewUrlParser: true })
-// mongoose.connect('mongodb://localhost/payAPI', { useNewUrlParser: true })
+//mongoose.connect('mongodb://host.docker.internal/payAPI', { useNewUrlParser: true })
+mongoose.connect('mongodb://localhost/payAPI', { useNewUrlParser: true })
 
 const productRoutes = require('./api/Routes/products')
 const userRoutes = require('./api/Routes/users')
